@@ -12,7 +12,8 @@ function getStartPlayer() {
             currentSize: 6,
             nextSize: 6,
             currentNode: 0,
-            skillPointDelay: 0
+            skillPointDelay: 0,
+            rerollCooldown: 0
         },
         breadth: {
             queue: [],

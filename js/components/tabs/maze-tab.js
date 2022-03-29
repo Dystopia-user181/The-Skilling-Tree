@@ -10,7 +10,7 @@ Components.add({
         return {
             isDisabled: false,
             spGain: 0,
-            isEnd: this.id === player.maze.currentSize * player.maze.currentSize - 1,
+            isEnd: false,
             isCurrent: false
         };
     },
@@ -30,6 +30,7 @@ Components.add({
         this.on(GAME_EVENTS.MAZE_MOVED, () => this.onMazeMoved());
         this.onMazeMoved();
         this.on(GAME_EVENTS.NEW_MAZE, () => this.onNewMaze());
+        this.onNewMaze();
     },
     methods: {
         update() {
@@ -106,7 +107,8 @@ Components.add({
         return {
             connections: new Set(),
             svgSize: 0,
-            size: 0
+            size: 0,
+            rerollCooldown: 0
         };
     },
     computed: {
@@ -116,8 +118,12 @@ Components.add({
         this.updateGraph();
     },
     methods: {
-        reset() {
-            Graph.newGraph();
+        update() {
+            this.rerollCooldown = player.maze.rerollCooldown / 1000;
+            this.canReroll = Graph.canReroll;
+        },
+        reroll() {
+            Graph.reroll();
         },
         updateGraph() {
             const connections = new Set();
@@ -136,7 +142,15 @@ Components.add({
     template: `
     <div>
         <br>
-        <button @click="reset">Reroll Maze</button>
+        <button
+            :disabled="!canReroll"
+            @click="reroll"
+        >
+            Reroll Maze
+            <span v-if="rerollCooldown">
+                (Next in {{ rerollCooldown.toFixed(2) }}s)
+            </span>
+        </button>
         <div class="l-maze">
             <maze-node
                 v-for="id in size"

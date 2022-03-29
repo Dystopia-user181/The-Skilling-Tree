@@ -21,7 +21,7 @@ const GameStorage = {
             const prop = defaultObj[i];
             if (playerObj[i] === undefined) {
                 playerObj[i] = prop;
-            } else if (typeof prop === "object") {
+            } else if (prop.constructor === Object) {
                 this.normalisePlayer(playerObj[i], prop);
             }
         }

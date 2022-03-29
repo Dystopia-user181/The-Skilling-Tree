@@ -42,9 +42,33 @@ const Graph = {
     compose(obj, size = player.maze.currentSize) {
         return obj[0] + obj[1]*size;
     },
+
     goto(x) {
         player.maze.currentNode = x;
         EventHub.dispatch(GAME_EVENTS.MAZE_MOVED, x);
+    },
+
+    get canReroll() {
+        return !player.maze.rerollCooldown && !player.maze.skillPointDelay;
+    },
+    reroll() {
+        player.maze.rerollCooldown = 10000;
+        this.newGraph();
+    },
+
+    get minSize() {
+        return 6;
+    },
+    get maxSize() {
+        return 12;
+    },
+    incrementSize() {
+        player.maze.nextSize += 2;
+        player.maze.nextSize = Math.min(player.maze.nextSize, this.maxSize);
+    },
+    decrementSize() {
+        player.maze.nextSize -= 2;
+        player.maze.nextSize = Math.max(player.maze.nextSize, this.minSize);
     },
 
     get atEnd() {

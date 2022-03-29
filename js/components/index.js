@@ -12,6 +12,7 @@ const Components = {
             template: `<game-ui />`
         });
         GameUI.initialised = true;
+        GameUI.update();
     }
 };
 

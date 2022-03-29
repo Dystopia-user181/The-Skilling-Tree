@@ -32,8 +32,13 @@ const Tabs = [
     component: "maze-tab"
 },
 {
-    name: "Skills",
+    name: "Options",
     id: 1,
+    component: "options-tab"
+},
+{
+    name: "Skills",
+    id: 2,
     component: "skills-tab",
     unlocked: () => player.progression.noSkillIssue
 }
