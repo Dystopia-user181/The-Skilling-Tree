@@ -4,6 +4,11 @@ Components.add({
         id: {
             type: Number,
             required: true
+        },
+        isAuto: {
+            type: Boolean,
+            required: false,
+            default: false
         }
     },
     data() {
@@ -12,7 +17,6 @@ Components.add({
             spGain: 0,
             isEnd: false,
             isCurrent: false,
-            isAuto: false,
             isSeen: false,
             isInBFSQueue: false
         };
@@ -45,6 +49,7 @@ Components.add({
             this.spGain = SkillPoints.gain;
         },
         onMazeMoved() {
+            if (this.node.shouldntExist) return;
             this.isDisabled = !this.node.isNeighbourOf(player.maze.currentNode);
             this.isCurrent = this.node.isCurrent;
             this.isSeen = this.node.isSeen;
@@ -52,8 +57,8 @@ Components.add({
             this.$recompute("xy");
         },
         onNewMaze() {
+            if (this.node.shouldntExist) return;
             this.isEnd = this.node.isEnd;
-            this.isAuto = player.search.mode !== SEARCH_MODES.MANUAL;
         },
         handleClick() {
             if (!this.isDisabled && !Graph.atEnd) {
@@ -81,11 +86,17 @@ Components.add({
         connection: {
             type: String,
             required: true
+        },
+        isAuto: {
+            type: Boolean,
+            required: false,
+            default: false
         }
     },
     data() {
         return {
-            hasQueue: false
+            hasQueue: false,
+            atEnd: false
         }
     },
     computed: {
@@ -99,27 +110,40 @@ Components.add({
             return Graph.decompose(this.decomposed[1]);
         },
         isDisabled() {
-            return !this.decomposed.includes(player.maze.currentNode);
+            if (this.isAuto) {
+                return !this.decomposed.every(x => Node(x).isSeen);
+            }
+            return this.atEnd || !this.decomposed.includes(player.maze.currentNode);
+        },
+        classObj() {
+            return {
+                'o-maze-connection--disabled': this.isDisabled,
+                'o-maze-connection--queued': this.hasQueue
+            };
         }
     },
     created() {
         this.on(GAME_EVENTS.MAZE_MOVED, () => this.onMazeMoved());
         this.onMazeMoved();
-        this.on(GAME_EVENTS.NEW_MAZE, () => (this.$recompute("xy1"), this.$recompute("xy2")));
+        this.on(GAME_EVENTS.NEW_MAZE, () => this.onNewMaze());
     },
     methods: {
         onMazeMoved() {
+            if (this.decomposed.some(x => Node(x).shouldntExist)) return;
+            this.atEnd = Graph.atEnd;
             this.$recompute("isDisabled")
-            this.hasQueue = !this.isDisabled && this.decomposed.some(x => Node(x).isInBFSQueue);
+            this.hasQueue = this.decomposed.some(x => Node(x).isSeen) && this.decomposed.some(x => Node(x).isInBFSQueue);
         },
+        onNewMaze() {
+            if (this.decomposed.some(x => Node(x).shouldntExist)) return;
+            this.$recompute("xy1");
+            this.$recompute("xy2");
+        }
     },
     template: `
     <line
         class="o-maze-connection"
-        :class="{
-            'o-maze-connection--disabled': isDisabled,
-            'o-maze-connection--queued': hasQueue
-        }"
+        :class="classObj"
         :x1="xy1[0]*45 + 25"
         :y1="xy1[1]*45 + 25"
         :x2="xy2[0]*45 + 25"
@@ -236,10 +260,13 @@ Components.add({
             svgSize: 0,
             size: 0,
             rerollCooldown: 0,
-            canReroll: false
+            canReroll: false,
+            isAuto: false
         };
     },
     created() {
+        this.on(GAME_EVENTS.MAZE_RESET_PROGRESS, () => this.updateAutomation());
+        this.updateAutomation();
         this.on(GAME_EVENTS.NEW_MAZE, () => this.updateGraph());
         this.updateGraph();
     },
@@ -250,6 +277,9 @@ Components.add({
         },
         reroll() {
             Graph.reroll();
+        },
+        updateAutomation() {
+            this.isAuto = player.search.mode !== SEARCH_MODES.MANUAL;
         },
         updateGraph() {
             const connections = new Set();
@@ -279,11 +309,17 @@ Components.add({
                 (Next in {{ rerollCooldown.toFixed(2) }}s)
             </span>
         </button>
-        <div class="l-maze">
+        <div
+            class="l-maze"
+            :class="{
+                'l-maze--auto': isAuto
+            }"
+        >
             <maze-node
                 v-for="id in size"
                 :key="id + '-maze-node'"
                 :id="id - 1"
+                :isAuto="isAuto"
             />
             <svg :style="{
                 width: svgSize,
@@ -293,6 +329,7 @@ Components.add({
                     v-for="connection in connections"
                     :key="connection + '-maze-connection'"
                     :connection="connection"
+                    :isAuto="isAuto"
                 />
             </svg>
         </div>

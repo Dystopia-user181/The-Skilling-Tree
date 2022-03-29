@@ -1,12 +1,12 @@
 const Graph = {
     newGraph() {
-        this.resetProgress();
+        player.maze.currentSize = player.maze.nextSize;
         player.maze.graph = this.createNewGraph();
+        this.resetProgress();
         EventHub.dispatch(GAME_EVENTS.NEW_MAZE);
     },
     resetProgress() {
         player.maze.currentNode = 0;
-        player.maze.currentSize = player.maze.nextSize;
         player.breadth.queue = [];
         player.breadth.seen = [];
         player.depth.stack = [];
@@ -122,7 +122,11 @@ class NodeState {
     }
 
     get isEnd() {
-        return this.id === player.maze.currentSize * player.maze.currentSize - 1;
+        return this.id === Graph.endPoint;
+    }
+
+    get shouldntExist() {
+        return this.id > Graph.endPoint;
     }
 
     get isInBFSQueue() {

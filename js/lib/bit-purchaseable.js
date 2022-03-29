@@ -5,10 +5,6 @@ class BitPurchaseableState extends GameMechanicState {
 
     set bits(value) { throw NotImplementedError(); }
 
-    get id() {
-        return this.config.id;
-    }
-
     get canBeApplied() {
         return matchBits(this.bits, this.id);
     }

@@ -69,13 +69,18 @@ body {
     stroke: #0007;
 }
 
-.o-maze-connection--queued {
-    stroke: #09a9;
+.l-maze--auto .o-maze-connection:not(.o-maze-connection--disabled):not(.o-maze-connection--queued) {
+    stroke: #f907;
 }
 
 .o-maze-connection--disabled {
     stroke: #00000028;
 }
+
+.o-maze-connection--queued {
+    stroke: #09a9;
+}
+
 
 .l-maze {
     position: relative;

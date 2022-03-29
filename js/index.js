@@ -1,5 +1,5 @@
-function funcOrConst(x) {
-    return typeof x === "function" ? x : x;
+function funcOrConst(x, ...args) {
+    return typeof x === "function" ? x(...args) : x;
 }
 
 function objectMapping(x, func) {

@@ -11,6 +11,6 @@ const Searching = {
     },
 
     get cooldown() {
-        return 2000;
+        return 1500;
     }
 }

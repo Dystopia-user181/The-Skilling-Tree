@@ -3,6 +3,7 @@ const BFS = {
         const bfs = player.breadth;
         if (bfs.queue.includes(Graph.endPoint)) {
             bfs.queue = [];
+            bfs.seen.push(Graph.endPoint);
             Graph.goto(Graph.endPoint);
             return;
         }
