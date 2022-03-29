@@ -67,6 +67,7 @@ export const Graph = {
         return !player.maze.rerollCooldown && !player.maze.skillPointDelay;
     },
     reroll() {
+        if (!this.canReroll) return;
         player.maze.rerollCooldown = 10000;
         this.newGraph();
     },

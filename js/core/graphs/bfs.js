@@ -7,8 +7,11 @@ export const BFS = {
             Graph.goto(Graph.endPoint);
             return;
         }
-        const node = Node(bfs.queue.shift() ?? 0);
-        if (node.isSeen) return;
+        const node = Node(bfs.queue.shift() ?? player.maze.currentNode);
+        if (node.isSeen) {
+            if (SkillPointUpgrades.autoReroll.canBeApplied) Graph.reroll();
+            return;
+        }
         player.maze.currentNode = node.id;
         bfs.seen.push(node.id);
 

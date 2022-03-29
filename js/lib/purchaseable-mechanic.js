@@ -4,7 +4,7 @@ export class PurchaseableMechanicState extends GameMechanicState {
     get currency() { throw NotImplementedError(); }
 
     get cost() {
-        if (this.costArgs) return funcOrConst(this.config.cost, ...costArgs);
+        if (this.costArgs) return funcOrConst(this.config.cost, ...this.costArgs);
         return funcOrConst(this.config.cost);
     }
 
@@ -14,6 +14,7 @@ export class PurchaseableMechanicState extends GameMechanicState {
 
     purchase() {
         if (this.canBeBought) {
+            this.currency.purchase(this.cost);
             this.onPurchase();
             this.config.onPurchase?.();
         }

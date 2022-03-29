@@ -15,6 +15,10 @@ export class RebuyableMechanicState extends PurchaseableMechanicState {
         return this.amount > 0;
     }
 
+    get effectValue() {
+        return funcOrConst(this.config.effect, this.amount);
+    }
+
     get costArgs() {
         return [this.amount];
     }

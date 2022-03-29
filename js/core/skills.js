@@ -46,8 +46,22 @@ export const SkillPointUpgrades = (function() {
         bfs: {
             id: 2,
             title: "'Puter Science",
-            description: "Unlock Breadth-first search.",
+            description: "Unlock Breadth first search.",
             cost: 72
+        },
+        autoReroll: {
+            id: 3,
+            title: "Machine Unlearning",
+            description: "Searching automatically rerolls if you are stuck (why would you want to disable this)",
+            cost: 200,
+            isUnlocked: () => SkillPointUpgrades.decreaseSearchSpeed.amount >= 3
+        },
+        dfs: {
+            id: 4,
+            title: "BLS",
+            description: "Breadth first search bad? Try Depth first search instead!",
+            cost: 1000,
+            isUnlocked: () => SkillPointUpgrades.decreaseSearchSpeed.amount >= 5
         },
 
 
@@ -55,9 +69,11 @@ export const SkillPointUpgrades = (function() {
             isRebuyable: true,
             id: "decreaseSearchSpeed",
             title: "Download More RAM",
-            description: "Speed up search by a factor of (omfggg who cares?).",
-            cost: x => Math.floor(1.2 ** x * 50),
-            effect: x => x * 0.5 + 1
+            description: "Speed up search by a factor of (omfggg whoo cares?)",
+            isUnlocked: () => SkillPointUpgrades.bfs.canBeApplied,
+            cost: x => Math.ceil(1.1 ** x * 50),
+            effect: x => x + 1,
+            formatEffect: x => `x${x.toFixed(1)} times faster`
         }
     }, x => x.isRebuyable ? new SkillPointRebuyableState(x) : new SkillPointUpgradeState(x));
 

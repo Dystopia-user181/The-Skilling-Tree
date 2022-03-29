@@ -13,6 +13,6 @@ export const Searching = {
     },
 
     get cooldown() {
-        return 1500;
+        return 1500 / SkillPointUpgrades.decreaseSearchSpeed.effectValue;
     }
 }

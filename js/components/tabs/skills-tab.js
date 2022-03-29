@@ -50,29 +50,30 @@ Components.add({
     data() {
         return {
             canBeBought: false,
-            isUnlocked: false
+            isUnlocked: false,
+            cost: 0
         }
     },
     methods: {
         update() {
             this.canBeBought = this.upgrade.canBeBought;
             this.isUnlocked = this.upgrade.isUnlocked;
+            this.cost = this.upgrade.cost;
         }
     },
     template: `
     <button
         v-if="isUnlocked"
         class="o-upgrade"
-        :class="{
-            'o-upgrade--bought': isBought
-        }"
-        :disabled="!canBeBought && !isBought"
+        :disabled="!canBeBought"
         @click="upgrade.purchase()"
     >
         <b>{{ upgrade.config.title }}</b>
         <br>
         <br>
         {{ upgrade.config.description }}
+        <br>
+        <effect-display :config="upgrade"/>
         <br><br>
         Cost: {{ upgrade.cost }} Skill Points
     </button>`
@@ -85,7 +86,7 @@ Components.add({
         rebuyables: () => SkillPointUpgrades.rebuyables,
     },
     template: `
-    <div>
+    <div style="width: 1100px;">
         <br>
         <b>Upgrades</b>
         <br>
@@ -93,6 +94,13 @@ Components.add({
         <skill-point-upgrade
             v-for="upgrade in upgrades"
             :key="upgrade.id + '-sp-upgrade'"
+            :upgrade="upgrade"
+        />
+        <br>
+        <br>
+        <skill-point-rebuyable
+            v-for="upgrade in rebuyables"
+            :key="upgrade.id + '-sp-rebuyable'"
             :upgrade="upgrade"
         />
     </div>`

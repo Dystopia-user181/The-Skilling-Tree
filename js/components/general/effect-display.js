@@ -4,6 +4,11 @@ Components.add({
         config: {
             type: Object,
             required: true
+        },
+        label: {
+            type: String,
+            required: false,
+            default: "Currently: "
         }
     },
     data() {
@@ -18,11 +23,11 @@ Components.add({
     },
     methods: {
         update() {
-            this.effectDisplay = this.config.config.formatEffect(this.config.effectOrDefault());
+            this.effectDisplay = this.config.config.formatEffect(this.config.effectValue);
         }
     },
     template: `
     <span v-if="isValid">
-        {{ effectDisplay }}
+        {{ label }}{{ effectDisplay }}
     </span>`
 })
