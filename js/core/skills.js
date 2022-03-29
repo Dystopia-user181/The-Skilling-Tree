@@ -3,13 +3,19 @@ import { BitPurchaseableState, RebuyableMechanicState } from "../lib/index.js";
 export const SkillPoints = {
     get gain() {
         let base = 1 + (player.maze.currentSize - 6) / 2;
-        return base * this.multiplier;
+        return Math.floor((base * this.multiplier) ** this.power);
     },
 
     get multiplier() {
         let multiplier = 1;
         multiplier *= SkillPointUpgrades.times2SP.effectOrDefault();
         return multiplier;
+    },
+
+    get power() {
+        let power = 1;
+        power *= SkillPointUpgrades.raiseSPGain1.effectOrDefault();
+        return power;
     }
 }
 
@@ -49,19 +55,46 @@ export const SkillPointUpgrades = (function() {
             description: "Unlock Breadth first search.",
             cost: 72
         },
-        autoReroll: {
+        raiseSPGain1: {
             id: 3,
+            title: "Please help me with balancing",
+            description: "^1.3 Skill Points gain but floor it so formatting doesn't go wack. whatever.",
+            cost: 150,
+            isUnlocked: () => SkillPointUpgrades.decreaseSearchSpeed.amount >= 3,
+            effect: 1.3,
+            default: 1
+        },
+        moreConnections: {
+            id: 4,
+            title: "Longer (this is an unweighted graph)",
+            description: `Give about 30% more connections between nodes.
+                Also speeds up search by 30%. Good news for searching, bad news for you.`,
+            cost: 300,
+            isUnlocked: () => SkillPointUpgrades.decreaseSearchSpeed.amount >= 3,
+            effect: 1.3,
+            default: 1
+        },
+        doubleBFS: {
+            id: 5,
+            title: "Not Stupid",
+            description: "What if we BFS from *both* sides? It'll take twice as long but it might work.",
+            cost: 500,
+            isUnlocked: () => SkillPointUpgrades.decreaseSearchSpeed.amount >= 3,
+            onPurchase: () => Graph.newGraph()
+        },
+        autoReroll: {
+            id: 6,
             title: "Machine Unlearning",
             description: "Searching automatically rerolls if you are stuck (why would you want to disable this)",
-            cost: 200,
-            isUnlocked: () => SkillPointUpgrades.decreaseSearchSpeed.amount >= 3
+            cost: 15000,
+            isUnlocked: () => SkillPointUpgrades.decreaseSearchSpeed.amount >= 1000
         },
         dfs: {
-            id: 4,
+            id: 7,
             title: "BLS",
             description: "Breadth first search bad? Try Depth first search instead!",
             cost: 1000,
-            isUnlocked: () => SkillPointUpgrades.decreaseSearchSpeed.amount >= 5
+            isUnlocked: () => SkillPointUpgrades.decreaseSearchSpeed.amount >= 1000
         },
 
 

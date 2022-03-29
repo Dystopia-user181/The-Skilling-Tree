@@ -1,7 +1,17 @@
 let lastTick = Date.now();
 export function gameLoop(diff = Date.now() - lastTick) {
+    lastTick = Date.now();
     if (player.maze.rerollCooldown > 0) {
         player.maze.rerollCooldown = Math.max(player.maze.rerollCooldown - diff, 0);
+    }
+    if (Graph.atEnd) {
+        player.maze.skillPointDelay += diff;
+        if (player.maze.skillPointDelay >= 1000) {
+            player.progression.noSkillIssue = true;
+            Currency.skillPoints.add(SkillPoints.gain);
+            Graph.newGraph();
+            player.maze.skillPointDelay = 0;
+        }
     }
     if (SkillPointUpgrades.bfs.canBeApplied && !Graph.atEnd && player.search.mode !== SEARCH_MODES.MANUAL) {
         player.search.cooldown += diff;
@@ -18,16 +28,6 @@ export function gameLoop(diff = Date.now() - lastTick) {
             }
         }
     }
-    if (Graph.atEnd) {
-        player.maze.skillPointDelay += diff;
-        if (player.maze.skillPointDelay >= 1000) {
-            player.progression.noSkillIssue = true;
-            Currency.skillPoints.add(SkillPoints.gain);
-            Graph.newGraph();
-            player.maze.skillPointDelay = 0;
-        }
-    }
-    lastTick = Date.now();
     if (player.options.lastSaveTimer < lastTick - 10000) {
         GameStorage.save();
         player.options.lastSaveTimer = lastTick;

@@ -9,6 +9,9 @@ export const Graph = {
         player.maze.currentNode = 0;
         player.breadth.queue = [];
         player.breadth.seen = [];
+        player.breadth.otherQueue = [];
+        player.breadth.otherSeen = [];
+        player.breadth.otherCurrentNode = this.endPoint;
         player.depth.stack = [];
         player.depth.seen = [];
         player.depth.dead = [];
@@ -21,10 +24,11 @@ export const Graph = {
         EventHub.dispatch(GAME_EVENTS.MAZE_MOVED);
         EventHub.dispatch(GAME_EVENTS.MAZE_RESET_PROGRESS);
     },
-    createNewGraph(n = player.maze.currentSize) {
+    createNewGraph(n = player.maze.currentSize, useDefault = false) {
         const n2 = n * n;
         const newGraph = Array.from(Array(n2), () => []);
         const connections = new Set();
+        const chance = useDefault ? 0.8 : 0.8 * SkillPointUpgrades.moreConnections.effectOrDefault();
         for (let i = 0; i < n2; i++) {
             const decomposed = this.decompose(i, n);
             const xMin = Math.max(decomposed[0] - 3, 0);
@@ -133,6 +137,21 @@ class NodeState {
     get isInBFSQueue() {
         if (player.search.mode !== SEARCH_MODES.BFS) return false;
         return player.breadth.queue.includes(this.id);
+    }
+
+    get isSeenBySecondBFS() {
+        if (!SkillPointUpgrades.doubleBFS.canBeApplied || player.search.mode !== SEARCH_MODES.BFS) return false;
+        return player.breadth.otherSeen.includes(this.id);
+    }
+
+    get isInSecondBFSQueue() {
+        if (!SkillPointUpgrades.doubleBFS.canBeApplied || player.search.mode !== SEARCH_MODES.BFS) return false;
+        return player.breadth.otherQueue.includes(this.id);
+    }
+
+    get isCurrentInSecondBFS() {
+        if (!SkillPointUpgrades.doubleBFS.canBeApplied || player.search.mode !== SEARCH_MODES.BFS) return false;
+        return player.breadth.otherCurrentNode === this.id;
     }
 
     static get(x) {

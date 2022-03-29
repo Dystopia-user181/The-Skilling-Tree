@@ -86,7 +86,7 @@ Components.add({
         rebuyables: () => SkillPointUpgrades.rebuyables,
     },
     template: `
-    <div style="width: 1100px;">
+    <div style="width: 1000px;">
         <br>
         <b>Upgrades</b>
         <br>

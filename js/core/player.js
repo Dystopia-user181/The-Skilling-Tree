@@ -9,7 +9,7 @@ export function getStartPlayer() {
             rebuyables: SkillPointRebuyableState.initPlayer(SkillPointUpgrades)
         },
         maze: {
-            graph: Graph.createNewGraph(6),
+            graph: Graph.createNewGraph(6, true),
             currentSize: 6,
             nextSize: 6,
             currentNode: 0,
@@ -18,7 +18,10 @@ export function getStartPlayer() {
         },
         breadth: {
             queue: [],
-            seen: []
+            seen: [],
+            otherQueue: [],
+            otherSeen: [],
+            otherCurrentNode: 35
         },
         depth: {
             stack: [],

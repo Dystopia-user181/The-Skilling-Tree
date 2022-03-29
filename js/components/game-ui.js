@@ -10,7 +10,8 @@ Components.add({
             Tabs,
             activeTab: 0,
             spUnlock: false,
-            sp: 0
+            sp: 0,
+            timeSinceLastSave: 0
         }
     },
     methods: {
@@ -18,11 +19,14 @@ Components.add({
             this.activeTab = player.options.lastOpenTab;
             this.spUnlock = player.progression.noSkillIssue;
             if (this.spUnlock) this.sp = player.skillPoints;
+            this.timeSinceLastSave = Date.now() - player.options.lastSaveTimer;
         }
     },
     template: `
     <div>
         <h2>The Modding Graph</h2>
+        <span>Time since last save: {{ (timeSinceLastSave / 1000).toFixed(3) }}s</span>
+        <br>
         <button
             v-for="(tab, idx) in Tabs.filter(x => x.unlocked)"
             @click="tab.set()"

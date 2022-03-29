@@ -51,9 +51,9 @@ Components.add({
         onMazeMoved() {
             if (this.node.shouldntExist) return;
             this.isDisabled = !this.node.isNeighbourOf(player.maze.currentNode);
-            this.isCurrent = this.node.isCurrent;
-            this.isSeen = this.node.isSeen;
-            this.isInBFSQueue = this.node.isInBFSQueue;
+            this.isCurrent = this.node.isCurrent || this.node.isCurrentInSecondBFS;
+            this.isSeen = this.node.isSeen || this.node.isSeenBySecondBFS;
+            this.isInBFSQueue = this.node.isInBFSQueue || this.node.isInSecondBFSQueue;
             this.$recompute("xy");
         },
         onNewMaze() {
@@ -111,7 +111,7 @@ Components.add({
         },
         isDisabled() {
             if (this.isAuto) {
-                return !this.decomposed.every(x => Node(x).isSeen);
+                return !this.decomposed.every(x => Node(x).isSeen || Node(x).isSeenBySecondBFS);
             }
             return this.atEnd || !this.decomposed.includes(player.maze.currentNode);
         },
@@ -132,7 +132,8 @@ Components.add({
             if (this.decomposed.some(x => Node(x).shouldntExist)) return;
             this.atEnd = Graph.atEnd;
             this.$recompute("isDisabled")
-            this.hasQueue = this.decomposed.some(x => Node(x).isSeen) && this.decomposed.some(x => Node(x).isInBFSQueue);
+            this.hasQueue = this.decomposed.some(x => Node(x).isCurrent || Node(x).isCurrentInSecondBFS)
+                && this.decomposed.some(x => Node(x).isInBFSQueue || Node(x).isInSecondBFSQueue);
         },
         onNewMaze() {
             if (this.decomposed.some(x => Node(x).shouldntExist)) return;
@@ -244,7 +245,7 @@ Are you sure you want to do this?`)) Searching.setMode(x);
                 {{ (1000 / searchCooldown).toFixed(1) }} searches/s
             </span>
             <span v-else>
-                {{ ((searchCooldown - currentSearchTime) * 0.001).toFixed(3) }} until next search
+                {{ ((searchCooldown - currentSearchTime) * 0.001).toFixed(3) }}s until next search
             </span>
         </template>
         <br>
