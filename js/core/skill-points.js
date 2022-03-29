@@ -27,5 +27,11 @@ const SkillPointUpgrades = objectMapping({
         cost: 5,
         effect: 2,
         default: 1
+    },
+    increaseMapSize: {
+        id: 1,
+        title: "Not Useless",
+        description: "You can increase map size to get more skill points.",
+        cost: 20
     }
 }, x => new SkillPointUpgradeState(x));

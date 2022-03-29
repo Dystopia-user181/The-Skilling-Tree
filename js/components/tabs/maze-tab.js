@@ -8,35 +8,43 @@ Components.add({
     },
     data() {
         return {
-            maze: player.maze,
-            spGain: 0
+            isDisabled: false,
+            spGain: 0,
+            isEnd: this.id === player.maze.currentSize * player.maze.currentSize - 1,
+            isCurrent: false
         };
     },
     computed: {
         xy() {
-            return Graphs.decompose(this.id);
-        },
-        isDisabled() {
-            return !this.maze.graph[this.maze.currentNode].includes(this.id);
-        },
-        isEnd() {
-            return this.id === this.maze.currentSize * this.maze.currentSize - 1;
+            return Graph.decompose(this.id);
         },
         classObj() {
             return {
-                'o-maze-node--disabled': this.isDisabled && this.maze.currentNode !== this.id,
-                'o-maze-node--current': this.maze.currentNode === this.id,
+                'o-maze-node--disabled': this.isDisabled && !this.isCurrent,
+                'o-maze-node--current': this.isCurrent,
                 'o-maze-node--finish': this.isEnd
             };
         }
+    },
+    created() {
+        this.on(GAME_EVENTS.MAZE_MOVED, () => this.onMazeMoved());
+        this.onMazeMoved();
+        this.on(GAME_EVENTS.NEW_MAZE, () => this.onNewMaze());
     },
     methods: {
         update() {
             this.spGain = SkillPoints.gain;
         },
+        onMazeMoved() {
+            this.isDisabled = !player.maze.graph[player.maze.currentNode].includes(this.id);
+            this.isCurrent = player.maze.currentNode === this.id;
+        },
+        onNewMaze() {
+            this.isEnd = this.id === player.maze.currentSize * player.maze.currentSize - 1;
+        },
         handleClick() {
-            if (!this.isDisabled && !Graphs.atEnd) {
-                this.maze.currentNode = this.id;
+            if (!this.isDisabled && !Graph.atEnd) {
+                Graph.goto(this.id);
             }
         }
     },
@@ -67,14 +75,17 @@ Components.add({
             return this.connection.split(",").map(x => Number(x));
         },
         xy1() {
-            return Graphs.decompose(this.decomposed[0]);
+            return Graph.decompose(this.decomposed[0]);
         },
         xy2() {
-            return Graphs.decompose(this.decomposed[1]);
+            return Graph.decompose(this.decomposed[1]);
         },
         isDisabled() {
             return !this.decomposed.includes(player.maze.currentNode);
         }
+    },
+    created() {
+        this.on(GAME_EVENTS.MAZE_MOVED, () => this.$recompute("isDisabled"));
     },
     template: `
     <line
@@ -93,26 +104,33 @@ Components.add({
     name: "maze-tab",
     data() {
         return {
-            maze: player.maze
+            connections: new Set(),
+            svgSize: 0,
+            size: 0
         };
     },
     computed: {
-        connections() {
-            const connections = new Set();
-            for (const node in this.maze.graph) {
-                for (const otherNode of this.maze.graph[node]) {
-                    connections.add([node, otherNode].sort((a, b) => a - b).join(","));
-                }
-            }
-            return connections;
-        },
-        size() {
-            return 45 * this.maze.currentSize + 50;
-        }
+    },
+    created() {
+        this.on(GAME_EVENTS.NEW_MAZE, () => this.updateGraph());
+        this.updateGraph();
     },
     methods: {
         reset() {
-            Graphs.newGraph();
+            Graph.newGraph();
+        },
+        updateGraph() {
+            const connections = new Set();
+            const graph = player.maze.graph;
+            for (const node in graph) {
+                for (const otherNode of graph[node]) {
+                    connections.add([node, otherNode].sort((a, b) => a - b).join(","));
+                }
+            }
+            this.connections = connections;
+            const size = player.maze.currentSize;
+            this.size = size * size;
+            this.svgSize = 45 * size + 50
         }
     },
     template: `
@@ -121,13 +139,13 @@ Components.add({
         <button @click="reset">Reroll Maze</button>
         <div class="l-maze">
             <maze-node
-                v-for="(_, nodeId) in maze.graph"
-                :key="nodeId + '-maze-node'"
-                :id="nodeId"
+                v-for="id in size"
+                :key="id + '-maze-node'"
+                :id="id - 1"
             />
             <svg :style="{
-                width: size,
-                height: size
+                width: svgSize,
+                height: svgSize
             }">
                 <maze-edge
                     v-for="connection in connections"

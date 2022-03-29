@@ -1,11 +1,11 @@
 let lastTick = Date.now();
 function gameLoop(diff = Date.now() - lastTick) {
-    if (Graphs.atEnd) {
+    if (Graph.atEnd) {
         player.maze.skillPointDelay += diff;
         if (player.maze.skillPointDelay >= 1000) {
             player.progression.noSkillIssue = true;
             Currency.skillPoints.add(SkillPoints.gain);
-            Graphs.newGraph();
+            Graph.newGraph();
             player.maze.skillPointDelay = 0;
         }
     }

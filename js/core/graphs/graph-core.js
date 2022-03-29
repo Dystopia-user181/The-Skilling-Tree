@@ -1,8 +1,10 @@
-const Graphs = {
+const Graph = {
     newGraph() {
         player.maze.currentNode = 0;
         player.maze.currentSize = player.maze.nextSize;
         player.maze.graph = this.createNewGraph();
+        EventHub.dispatch(GAME_EVENTS.MAZE_MOVED);
+        EventHub.dispatch(GAME_EVENTS.NEW_MAZE);
     },
     createNewGraph(n = player.maze.currentSize) {
         const n2 = n * n;
@@ -39,6 +41,10 @@ const Graphs = {
     },
     compose(obj, size = player.maze.currentSize) {
         return obj[0] + obj[1]*size;
+    },
+    goto(x) {
+        player.maze.currentNode = x;
+        EventHub.dispatch(GAME_EVENTS.MAZE_MOVED, x);
     },
 
     get atEnd() {

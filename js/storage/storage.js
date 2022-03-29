@@ -8,6 +8,7 @@ const GameStorage = {
         if (load) {
             player = JSON.parse(load);
         }
+        this.normalisePlayer();
     },
     hardReset() {
         if (confirm("Hard reset?")) {
@@ -17,7 +18,7 @@ const GameStorage = {
     },
     normalisePlayer(playerObj = player, defaultObj = getStartPlayer()) {
         for (const i in defaultObj) {
-            const prop = defaultObj;
+            const prop = defaultObj[i];
             if (playerObj[i] === undefined) {
                 playerObj[i] = prop;
             } else if (typeof prop === "object") {

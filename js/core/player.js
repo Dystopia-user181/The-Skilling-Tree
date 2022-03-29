@@ -8,7 +8,7 @@ function getStartPlayer() {
             skillBits: 0
         },
         maze: {
-            graph: Graphs.createNewGraph(6),
+            graph: Graph.createNewGraph(6),
             currentSize: 6,
             nextSize: 6,
             currentNode: 0,

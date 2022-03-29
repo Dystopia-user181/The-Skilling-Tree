@@ -13,31 +13,68 @@ const Components = {
         });
         GameUI.initialised = true;
     }
-}
+};
 
 Vue.mixin({
     created() {
-        GameUI.addHandler(this);
-        if (GameUI.initialised) this.update?.();
+        if (this.update) {
+            this.on(GAME_EVENTS.UPDATE, () => this.update());
+            if (GameUI.initialised) this.update();
+        }
+
+        const recomputed = Object.create(null);
+        const watchers = this._computedWatchers;
+
+        if (!watchers) return;
+
+        for (const key in watchers) makeRecomputable(watchers[key], key, recomputed);
+
+        this.$recompute = key => recomputed[key] = !recomputed[key];
+        Vue.observable(recomputed);
     },
     destroyed() {
-        GameUI.removeHandler(this);
+        EventHub.ui.offAll(this);
+    },
+    methods: {
+        on(event, fn) {
+            EventHub.ui.on(event, fn, this);
+        }
     }
-})
+});
+
+function makeRecomputable(watcher, key, recomputed) {
+    const original = watcher.getter;
+    recomputed[key] = true;
+
+    watcher.getter = vm => (recomputed[key], original.call(vm, vm));
+}
 
 const GameUI = {
     initialised: false,
     ui: null,
-    addHandler(target) {
-        this._handlers.push(target);
+    events: [],
+    flushPromise: undefined,
+    dispatch(event) {
+        const index = this.events.indexOf(event);
+        if (index !== -1) {
+          this.events.splice(index, 1);
+        }
+        if (event !== GAME_EVENTS.UPDATE) {
+          this.events.push(event);
+        }
+        if (this.flushPromise) return;
+        this.flushPromise = Promise.resolve()
+          .then(this.flushEvents.bind(this));
     },
-    removeHandler(target) {
-        this._handlers.filter(x => x !== target);
+    flushEvents() {
+        this.flushPromise = undefined;
+        for (const event of this.events) {
+            EventHub.ui.dispatch(event);
+        }
+        EventHub.ui.dispatch(GAME_EVENTS.UPDATE);
+        this.events = [];
     },
     update() {
-        for (const comp of this._handlers) {
-            if (comp.update) comp.update();
-        }
-    },
-    _handlers: []
-}
+        this.dispatch(GAME_EVENTS.UPDATE);
+    }
+};
