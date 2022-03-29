@@ -6,7 +6,7 @@ const GameStorage = {
         player = getStartPlayer();
         const load = localStorage.getItem(this.saveKey);
         if (load) {
-            player = load;
+            player = JSON.parse(load);
         }
     },
     hardReset() {

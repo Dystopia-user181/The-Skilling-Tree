@@ -10,5 +10,9 @@ function gameLoop(diff = Date.now() - lastTick) {
         }
     }
     lastTick = Date.now();
+    if (player.options.lastSaveTimer < lastTick - 10000) {
+        GameStorage.save();
+        player.options.lastSaveTimer = lastTick;
+    }
     GameUI.update();
 }

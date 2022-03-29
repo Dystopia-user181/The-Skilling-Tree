@@ -24,7 +24,8 @@ function getStartPlayer() {
             dead: []
         },
         options: {
-            lastOpenTab: 0
+            lastOpenTab: 0,
+            lastSaveTimer: Date.now()
         }
     }
 }
