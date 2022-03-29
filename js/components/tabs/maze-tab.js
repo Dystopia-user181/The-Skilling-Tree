@@ -11,17 +11,25 @@ Components.add({
             isDisabled: false,
             spGain: 0,
             isEnd: false,
-            isCurrent: false
+            isCurrent: false,
+            isAuto: false,
+            isSeen: false,
+            isInBFSQueue: false
         };
     },
     computed: {
+        node() {
+            return Node(this.id);
+        },
         xy() {
             return Graph.decompose(this.id);
         },
         classObj() {
             return {
-                'o-maze-node--disabled': this.isDisabled && !this.isCurrent,
+                'o-maze-node--disabled': (this.isDisabled && !this.isCurrent) || this.isAuto,
+                'o-maze-node--seen': this.isSeen,
                 'o-maze-node--current': this.isCurrent,
+                'o-maze-node--queued': this.isInBFSQueue,
                 'o-maze-node--finish': this.isEnd
             };
         }
@@ -29,7 +37,7 @@ Components.add({
     created() {
         this.on(GAME_EVENTS.MAZE_MOVED, () => this.onMazeMoved());
         this.onMazeMoved();
-        this.on(GAME_EVENTS.NEW_MAZE, () => this.onNewMaze());
+        this.on(GAME_EVENTS.MAZE_RESET_PROGRESS, () => this.onNewMaze());
         this.onNewMaze();
     },
     methods: {
@@ -37,12 +45,15 @@ Components.add({
             this.spGain = SkillPoints.gain;
         },
         onMazeMoved() {
-            this.isDisabled = !player.maze.graph[player.maze.currentNode].includes(this.id);
-            this.isCurrent = player.maze.currentNode === this.id;
+            this.isDisabled = !this.node.isNeighbourOf(player.maze.currentNode);
+            this.isCurrent = this.node.isCurrent;
+            this.isSeen = this.node.isSeen;
+            this.isInBFSQueue = this.node.isInBFSQueue;
             this.$recompute("xy");
         },
         onNewMaze() {
-            this.isEnd = this.id === player.maze.currentSize * player.maze.currentSize - 1;
+            this.isEnd = this.node.isEnd;
+            this.isAuto = player.search.mode !== SEARCH_MODES.MANUAL;
         },
         handleClick() {
             if (!this.isDisabled && !Graph.atEnd) {
@@ -72,6 +83,11 @@ Components.add({
             required: true
         }
     },
+    data() {
+        return {
+            hasQueue: false
+        }
+    },
     computed: {
         decomposed() {
             return this.connection.split(",").map(x => Number(x));
@@ -87,14 +103,22 @@ Components.add({
         }
     },
     created() {
-        this.on(GAME_EVENTS.MAZE_MOVED, () => this.$recompute("isDisabled"));
+        this.on(GAME_EVENTS.MAZE_MOVED, () => this.onMazeMoved());
+        this.onMazeMoved();
         this.on(GAME_EVENTS.NEW_MAZE, () => (this.$recompute("xy1"), this.$recompute("xy2")));
+    },
+    methods: {
+        onMazeMoved() {
+            this.$recompute("isDisabled")
+            this.hasQueue = !this.isDisabled && this.decomposed.some(x => Node(x).isInBFSQueue);
+        },
     },
     template: `
     <line
         class="o-maze-connection"
         :class="{
-            'o-maze-connection--disabled': isDisabled
+            'o-maze-connection--disabled': isDisabled,
+            'o-maze-connection--queued': hasQueue
         }"
         :x1="xy1[0]*45 + 25"
         :y1="xy1[1]*45 + 25"
@@ -157,6 +181,53 @@ Components.add({
         <br>
     </div>`
 });
+
+Components.add({
+    name: "maze-search-mode-display",
+    data() {
+        return {
+            isBFSUnlocked: false,
+            isManual: true,
+            searchCooldown: 2000,
+            currentSearchTime: 0,
+            SEARCH_MODES
+        };
+    },
+    methods: {
+        update() {
+            this.isBFSUnlocked = SkillPointUpgrades.bfs.canBeApplied;
+            this.isManual = player.search.mode === SEARCH_MODES.MANUAL;
+            this.searchCooldown = Searching.cooldown;
+            this.currentSearchTime = player.search.cooldown;
+        },
+        setMode(x) {
+            if (confirm(`Switching will reset your maze progress!
+Are you sure you want to do this?`)) Searching.setMode(x);
+        }
+    },
+    template: `
+    <div v-if="isBFSUnlocked">
+        <br>
+        <button @click="setMode(SEARCH_MODES.MANUAL)">
+            Set Mode to MANUAL
+        </button>
+        <button @click="setMode(SEARCH_MODES.BFS)">
+            Set Mode to BREADTH FIRST SEARCH
+        </button>
+        <br>
+        <template v-if="!isManual">
+            <span v-if="searchCooldown <= 100">
+                {{ (1000 / searchCooldown).toFixed(1) }} searches/s
+            </span>
+            <span v-else>
+                {{ ((searchCooldown - currentSearchTime) * 0.001).toFixed(3) }} until next search
+            </span>
+        </template>
+        <br>
+        <br>
+    </div>`
+});
+
 Components.add({
     name: "maze-tab",
     data() {
@@ -198,6 +269,7 @@ Components.add({
     <div>
         <br>
         <maze-size-display />
+        <maze-search-mode-display />
         <button
             :disabled="!canReroll"
             @click="reroll"

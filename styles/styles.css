@@ -32,6 +32,7 @@ body {
 .o-maze-node:hover {
     transform: translate(-50%, -50%) scale(1.3);
 }
+
 .o-maze-node--disabled:hover {
     transform: translate(-50%, -50%);
 }
@@ -44,13 +45,32 @@ body {
     background-color: #bfb;
 }
 
+.o-maze-node--seen {
+    color: #f90;
+}
+
+.o-maze-node--queued {
+    color: #089;
+    box-shadow: 0 0 5px 1px;
+}
+
 .o-maze-node--current {
     background-color: #fb6;
+    color: #000;
+}
+
+.o-maze-node--current.o-maze-node--disabled {
+    background-color: #fb6;
+    color: #000;
 }
 
 .o-maze-connection {
     stroke-width: 4px;
     stroke: #0007;
+}
+
+.o-maze-connection--queued {
+    stroke: #09a9;
 }
 
 .o-maze-connection--disabled {
@@ -70,6 +90,7 @@ body {
     width: 250px;
     height: 130px;
     cursor: pointer;
+    vertical-align: middle;
 }
 
 .o-upgrade--bought {

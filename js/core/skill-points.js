@@ -33,5 +33,11 @@ const SkillPointUpgrades = objectMapping({
         title: "Not Useless",
         description: "You can increase maze size to get more skill points.",
         cost: 20
+    },
+    bfs: {
+        id: 2,
+        title: "'Puter Science",
+        description: "Unlock Breadth-first search.",
+        cost: 72
     }
 }, x => new SkillPointUpgradeState(x));

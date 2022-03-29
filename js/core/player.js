@@ -24,10 +24,15 @@ function getStartPlayer() {
             seen: [],
             dead: []
         },
+        search: {
+            cooldown: 0,
+            mode: 0
+        },
         options: {
             lastOpenTab: 0,
             lastSaveTimer: Date.now()
-        }
+        },
+        version: 0
     }
 }
 

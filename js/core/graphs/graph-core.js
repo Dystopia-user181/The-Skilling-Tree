@@ -1,10 +1,25 @@
 const Graph = {
     newGraph() {
+        this.resetProgress();
+        player.maze.graph = this.createNewGraph();
+        EventHub.dispatch(GAME_EVENTS.NEW_MAZE);
+    },
+    resetProgress() {
         player.maze.currentNode = 0;
         player.maze.currentSize = player.maze.nextSize;
-        player.maze.graph = this.createNewGraph();
+        player.breadth.queue = [];
+        player.breadth.seen = [];
+        player.depth.stack = [];
+        player.depth.seen = [];
+        player.depth.dead = [];
+        player.search.cooldown = 0;
+        if (player.search.mode === SEARCH_MODES.BFS) {
+            BFS.moveOne();
+        } else {
+            // Wait until DFS is implemented
+        }
         EventHub.dispatch(GAME_EVENTS.MAZE_MOVED);
-        EventHub.dispatch(GAME_EVENTS.NEW_MAZE);
+        EventHub.dispatch(GAME_EVENTS.MAZE_RESET_PROGRESS);
     },
     createNewGraph(n = player.maze.currentSize) {
         const n2 = n * n;
@@ -72,6 +87,61 @@ const Graph = {
     },
 
     get atEnd() {
-        return player.maze.currentNode === player.maze.currentSize * player.maze.currentSize - 1;
+        return player.maze.currentNode === this.endPoint;
+    },
+    get endPoint() {
+        return player.maze.currentSize * player.maze.currentSize - 1;
     }
+}
+
+class NodeState {
+    constructor(x) {
+        this.id = x;
+    }
+
+    get neighbours() {
+        return player.maze.graph[this.id];
+    }
+
+    isNeighbourOf(x) {
+        return this.neighbours.includes(x);
+    }
+
+    get isSeen() {
+        if (player.search.mode === SEARCH_MODES.MANUAL) return false;
+        return (player.search.mode === SEARCH_MODES.BFS ? player.breadth.seen : player.depth.seen).includes(this.id);
+    }
+
+    get isDead() {
+        if (player.search.mode !== SEARCH_MODES.DFS) return false;
+        return player.depth.dead.includes(this.id);
+    }
+
+    get isCurrent() {
+        return player.maze.currentNode === this.id;
+    }
+
+    get isEnd() {
+        return this.id === player.maze.currentSize * player.maze.currentSize - 1;
+    }
+
+    get isInBFSQueue() {
+        if (player.search.mode !== SEARCH_MODES.BFS) return false;
+        return player.breadth.queue.includes(this.id);
+    }
+
+    static get(x) {
+        const storedValue = NodeStates.get(x);
+        if (storedValue) return storedValue
+        else {
+            NodeStates.set(x, new NodeState(x));
+            return NodeStates.get(x);
+        }
+    }
+}
+
+const NodeStates = new Map();
+
+function Node(x) {
+    return NodeState.get(x);
 }
