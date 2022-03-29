@@ -1,4 +1,4 @@
-const GameStorage = {
+export const GameStorage = {
     save() {
         localStorage.setItem(this.saveKey, JSON.stringify(player));
     },

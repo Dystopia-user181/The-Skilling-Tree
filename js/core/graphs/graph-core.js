@@ -1,4 +1,4 @@
-const Graph = {
+export const Graph = {
     newGraph() {
         player.maze.currentSize = player.maze.nextSize;
         player.maze.graph = this.createNewGraph();
@@ -144,8 +144,8 @@ class NodeState {
     }
 }
 
-const NodeStates = new Map();
+export const NodeStates = new Map();
 
-function Node(x) {
+export function Node(x) {
     return NodeState.get(x);
 }

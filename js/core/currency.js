@@ -1,4 +1,4 @@
-class Currency {
+export class Currency {
     get value() { throw new NotImplementedError(); }
 
     set value(value) { throw new NotImplementedError(); }

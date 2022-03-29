@@ -1,11 +1,12 @@
-function getStartPlayer() {
+export function getStartPlayer() {
     return {
         skillPoints: 0,
         progression: {
             noSkillIssue: false
         },
         skills: {
-            skillBits: 0
+            skillBits: 0,
+            rebuyables: SkillPointRebuyableState.initPlayer(SkillPointUpgrades)
         },
         maze: {
             graph: Graph.createNewGraph(6),
@@ -36,4 +37,4 @@ function getStartPlayer() {
     }
 }
 
-let player;
+window.player = {};

@@ -1,5 +1,5 @@
 let lastTick = Date.now();
-function gameLoop(diff = Date.now() - lastTick) {
+export function gameLoop(diff = Date.now() - lastTick) {
     if (player.maze.rerollCooldown > 0) {
         player.maze.rerollCooldown = Math.max(player.maze.rerollCooldown - diff, 0);
     }

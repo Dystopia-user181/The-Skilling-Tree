@@ -1,10 +1,12 @@
-const SEARCH_MODES = {
+export { BFS } from "./bfs.js";
+
+export const SEARCH_MODES = {
     MANUAL: 0,
     BFS: 1,
     DFS: 1
 }
 
-const Searching = {
+export const Searching = {
     setMode(x) {
         player.search.mode = x;
         Graph.resetProgress();

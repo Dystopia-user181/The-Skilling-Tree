@@ -1,22 +1,19 @@
-function funcOrConst(x, ...args) {
-    return typeof x === "function" ? x(...args) : x;
-}
-
-function objectMapping(x, func) {
-    const y = {};
-    for (const i in x) {
-        y[i] = func(x[i], i);
-    }
-    return y;
-}
-
-function matchBits(bits, id) {
-    return Boolean(bits & (1 << id))
-}
-
-class NotImplementedError extends Error {
-    constructor() {
-      super("The method is not implemented.");
-      this.name = "NotImplementedError";
+function mergeIntoGlobal(obj) {
+    for (const i in obj) {
+        window[i] = obj[i];
     }
 }
+
+import "./extensions.js";
+
+import * as lib from "./lib/index.js";
+mergeIntoGlobal(lib);
+
+import * as core from "./core/index.js";
+mergeIntoGlobal(core);
+
+import * as storage from "./storage/index.js";
+mergeIntoGlobal(storage);
+
+import * as ui from "./components/index.js";
+mergeIntoGlobal(ui);

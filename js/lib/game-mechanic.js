@@ -1,4 +1,4 @@
-class GameMechanicState {
+export class GameMechanicState {
     constructor(config) {
         this.config = config;
     }
@@ -9,6 +9,10 @@ class GameMechanicState {
 
     get canBeApplied() {
         return true;
+    }
+
+    get isUnlocked() {
+        return funcOrConst(this.config.isUnlocked ?? true);
     }
 
     get effectValue() {

@@ -1,4 +1,4 @@
-class EventHub {
+export class EventHub {
     constructor() {
         this._handlers = {};
     }
@@ -38,7 +38,7 @@ class EventHub {
 EventHub.logic = new EventHub();
 EventHub.ui = new EventHub();
 
-const GAME_EVENTS = {
+window.GAME_EVENTS = {
     UPDATE: "UPDATE",
 
     MAZE_MOVED: "MAZE_MOVED",

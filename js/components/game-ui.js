@@ -1,3 +1,8 @@
+import "./general/effect-display.js";
+import "./tabs/maze-tab.js";
+import "./tabs/options-tab.js";
+import "./tabs/skills-tab.js";
+
 Components.add({
     name: "game-ui",
     data() {
@@ -31,4 +36,4 @@ Components.add({
         </template>
         <component :is="Tabs[activeTab].component" />
     </div>`
-})
+});

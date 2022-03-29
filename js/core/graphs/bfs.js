@@ -1,4 +1,4 @@
-const BFS = {
+export const BFS = {
     moveOne() {
         const bfs = player.breadth;
         if (bfs.queue.includes(Graph.endPoint)) {

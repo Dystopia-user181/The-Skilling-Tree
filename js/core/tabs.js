@@ -25,7 +25,7 @@ class TabState {
     }
 }
 
-const Tabs = [
+export const Tabs = [
 {
     name: "Maze",
     id: 0,

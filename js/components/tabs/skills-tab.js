@@ -2,24 +2,66 @@ Components.add({
     name: "skill-point-upgrade",
     props: {
         upgrade: {
-            type: SkillPointUpgradeState,
+            type: Object,
             required: true
         }
     },
     data() {
         return {
             canBeBought: false,
-            isBought: false
+            isBought: false,
+            isUnlocked: false
         }
     },
     methods: {
         update() {
             this.canBeBought = this.upgrade.canBeBought;
             this.isBought = this.upgrade.canBeApplied;
+            this.isUnlocked = this.upgrade.isUnlocked;
         }
     },
     template: `
     <button
+        v-if="isUnlocked"
+        class="o-upgrade"
+        :class="{
+            'o-upgrade--bought': isBought
+        }"
+        :disabled="!canBeBought && !isBought"
+        @click="upgrade.purchase()"
+    >
+        <b>{{ upgrade.config.title }}</b>
+        <br>
+        <br>
+        {{ upgrade.config.description }}
+        <br><br>
+        Cost: {{ upgrade.cost }} Skill Points
+    </button>`
+});
+
+Components.add({
+    name: "skill-point-rebuyable",
+    props: {
+        upgrade: {
+            type: Object,
+            required: true
+        }
+    },
+    data() {
+        return {
+            canBeBought: false,
+            isUnlocked: false
+        }
+    },
+    methods: {
+        update() {
+            this.canBeBought = this.upgrade.canBeBought;
+            this.isUnlocked = this.upgrade.isUnlocked;
+        }
+    },
+    template: `
+    <button
+        v-if="isUnlocked"
         class="o-upgrade"
         :class="{
             'o-upgrade--bought': isBought
@@ -39,7 +81,8 @@ Components.add({
 Components.add({
     name: "skills-tab",
     computed: {
-        upgrades: () => SkillPointUpgrades
+        upgrades: () => SkillPointUpgrades.singles,
+        rebuyables: () => SkillPointUpgrades.rebuyables,
     },
     template: `
     <div>
