@@ -28,10 +28,10 @@ const SkillPointUpgrades = objectMapping({
         effect: 2,
         default: 1
     },
-    increaseMapSize: {
+    increaseMazeSize: {
         id: 1,
         title: "Not Useless",
-        description: "You can increase map size to get more skill points.",
+        description: "You can increase maze size to get more skill points.",
         cost: 20
     }
 }, x => new SkillPointUpgradeState(x));

@@ -39,6 +39,7 @@ Components.add({
         onMazeMoved() {
             this.isDisabled = !player.maze.graph[player.maze.currentNode].includes(this.id);
             this.isCurrent = player.maze.currentNode === this.id;
+            this.$recompute("xy");
         },
         onNewMaze() {
             this.isEnd = this.id === player.maze.currentSize * player.maze.currentSize - 1;
@@ -87,6 +88,7 @@ Components.add({
     },
     created() {
         this.on(GAME_EVENTS.MAZE_MOVED, () => this.$recompute("isDisabled"));
+        this.on(GAME_EVENTS.NEW_MAZE, () => (this.$recompute("xy1"), this.$recompute("xy2")));
     },
     template: `
     <line
@@ -102,16 +104,69 @@ Components.add({
 });
 
 Components.add({
+    name: "maze-size-display",
+    data() {
+        return {
+            isUnlocked: false,
+            currentSize: 6,
+            nextSize: 6,
+            minSize: 6,
+            maxSize: 6
+        };
+    },
+    methods: {
+        update() {
+            this.isUnlocked = SkillPointUpgrades.increaseMazeSize.canBeApplied;
+            this.currentSize = player.maze.currentSize;
+            this.nextSize = player.maze.nextSize;
+            this.minSize = Graph.minSize;
+            this.maxSize = Graph.maxSize;
+        },
+        increment() {
+            Graph.incrementSize();
+            this.update();
+        },
+        decrement() {
+            Graph.decrementSize();
+            this.update();
+        }
+    },
+    template: `
+    <div v-if="isUnlocked">
+        Next Size:
+        <button
+            class="o-slider-button"
+            :disabled="nextSize <= minSize"
+            @click="decrement"
+        >
+            -
+        </button>
+        <span style="display: inline-block; width: 70px; text-align: center;">
+            {{ nextSize }}
+        </span>
+        <button
+            class="o-slider-button"
+            :disabled="nextSize >= maxSize"
+            @click="increment"
+        >
+            +
+        </button>
+        <br>
+        Current Size: {{ currentSize }}
+        <br>
+        <br>
+    </div>`
+});
+Components.add({
     name: "maze-tab",
     data() {
         return {
             connections: new Set(),
             svgSize: 0,
             size: 0,
-            rerollCooldown: 0
+            rerollCooldown: 0,
+            canReroll: false
         };
-    },
-    computed: {
     },
     created() {
         this.on(GAME_EVENTS.NEW_MAZE, () => this.updateGraph());
@@ -136,12 +191,13 @@ Components.add({
             this.connections = connections;
             const size = player.maze.currentSize;
             this.size = size * size;
-            this.svgSize = 45 * size + 50
+            this.svgSize = 45 * size
         }
     },
     template: `
     <div>
         <br>
+        <maze-size-display />
         <button
             :disabled="!canReroll"
             @click="reroll"
