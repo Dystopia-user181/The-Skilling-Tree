@@ -1,4 +1,5 @@
 export { BFS } from "./bfs.js";
+export { DFS } from "./dfs.js";
 
 export const SEARCH_MODES = {
     MANUAL: 0,

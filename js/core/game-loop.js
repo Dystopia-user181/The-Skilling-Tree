@@ -23,7 +23,7 @@ export function gameLoop(diff = Date.now() - lastTick) {
                 if (player.search.mode === SEARCH_MODES.BFS) {
                     BFS.moveOne();
                 } else {
-                    // Wait until DFS is implemented
+                    DFS.moveOne();
                 }
             }
         }

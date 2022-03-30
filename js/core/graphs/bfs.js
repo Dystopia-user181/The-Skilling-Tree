@@ -26,7 +26,7 @@ export const BFS = {
             if (SkillPointUpgrades.autoReroll.canBeApplied) Graph.reroll();
             return;
         }
-        player.maze.currentNode = node.id;
+        Graph.goto(node.id);
         bfs.seen.push(node.id);
 
         for (const neighbour of node.neighbours) {

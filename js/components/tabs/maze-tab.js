@@ -18,7 +18,8 @@ Components.add({
             isEnd: false,
             isCurrent: false,
             isSeen: false,
-            isInBFSQueue: false
+            isInBFSQueue: false,
+            isDead: false
         };
     },
     computed: {
@@ -34,6 +35,7 @@ Components.add({
                 'o-maze-node--seen': this.isSeen,
                 'o-maze-node--current': this.isCurrent,
                 'o-maze-node--queued': this.isInBFSQueue,
+                'o-maze-node--dead': this.isDead,
                 'o-maze-node--finish': this.isEnd
             };
         }
@@ -52,7 +54,8 @@ Components.add({
             if (this.node.shouldntExist) return;
             this.isDisabled = !this.node.isNeighbourOf(player.maze.currentNode);
             this.isCurrent = this.node.isCurrent || this.node.isCurrentInSecondBFS;
-            this.isSeen = this.node.isSeen || this.node.isSeenBySecondBFS;
+            this.isSeen = (this.node.isSeen || this.node.isSeenBySecondBFS) && !this.node.isDead;
+            this.isDead = this.node.isDead;
             this.isInBFSQueue = this.node.isInBFSQueue || this.node.isInSecondBFSQueue;
             this.$recompute("xy");
         },

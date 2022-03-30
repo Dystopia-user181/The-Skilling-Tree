@@ -24,7 +24,7 @@ export function getStartPlayer() {
             otherCurrentNode: 35
         },
         depth: {
-            stack: [],
+            stack: [0],
             seen: [],
             dead: []
         },

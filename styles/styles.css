@@ -49,6 +49,12 @@ body {
     color: #f90;
 }
 
+.o-maze-node--dead {
+    color: #999;
+    cursor: not-allowed;
+    background-color: #f99;
+}
+
 .o-maze-node--queued {
     color: #089;
     box-shadow: 0 0 5px 1px;
