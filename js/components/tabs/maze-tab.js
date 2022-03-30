@@ -274,24 +274,36 @@ Components.add({
             connections: new Set(),
             svgSize: 0,
             size: 0,
+            length: 0,
             rerollCooldown: 0,
             canReroll: false,
             isAuto: false,
             shouldShowLargeMazeRepresentation: false,
-            spGain: 0
+            spGain: 0,
+            ctx: null
         };
     },
     created() {
+        this.on(GAME_EVENTS.MAZE_MOVED, () => this.onMazeMove());
         this.on(GAME_EVENTS.MAZE_RESET_PROGRESS, () => this.updateAutomation());
         this.updateAutomation();
         this.on(GAME_EVENTS.NEW_MAZE, () => this.updateGraph());
         this.updateGraph();
+    },
+    mounted() {
+        this.ctx = this.$refs.canvas?.getContext("2d");
+        this.onMazeMove();
     },
     methods: {
         update() {
             this.rerollCooldown = player.maze.rerollCooldown / 1000;
             this.canReroll = Graph.canReroll;
             this.spGain = SkillPoints.gain;
+        },
+        onMazeMove() {
+            if (this.ctx) {
+                this.drawCanvasGraph();
+            }
         },
         reroll() {
             Graph.reroll();
@@ -301,8 +313,14 @@ Components.add({
         },
         updateGraph() {
             const size = player.maze.currentSize;
+            this.length = size;
             this.shouldShowLargeMazeRepresentation = size <= 40;
-            if (!this.shouldShowLargeMazeRepresentation) return;
+            if (!this.shouldShowLargeMazeRepresentation) {
+                this.$nextTick(
+                    () => this.ctx = this.$refs.canvas.getContext("2d")
+                );
+                return;
+            }
             const connections = new Set();
             const graph = player.maze.graph;
             for (const node in graph) {
@@ -312,7 +330,25 @@ Components.add({
             }
             this.connections = connections;
             this.size = size * size;
-            this.svgSize = 45 * size
+            this.svgSize = 45 * size;
+        },
+        drawCanvasGraph() {
+            const l = this.length;
+            for (let i = 0; i < l; i++) {
+                for (let j = 0; j < l; j++) {
+                    this.ctx.fillStyle = this.nodeColour(i * l + j);
+                    this.ctx.fillRect(j * 2, i * 2, 2, 2);
+                }
+            }
+        },
+        nodeColour(id) {
+            const node = Node(id);
+            if (node.isCurrent || node.isCurrentInSecondBFS) return "#000";
+            if (node.isEnd) return "#0f0";
+            if (node.isDead) return "#f00";
+            if (node.isSeen || node.isSeenBySecondBFS) return "#f90";
+            if (node.isInBFSQueue || node.isInSecondBFSQueue) return "#089";
+            return "#999";
         }
     },
     template: `
@@ -360,6 +396,12 @@ Components.add({
             The maze is too big to be represented using nodes
             <br>
             When I say "too big" I don't mean "oh it lags a little", I mean "Vue refuses to render anything".
+            <br><br>
+            <canvas
+                ref="canvas"
+                :width="length * 2"
+                :height="length * 2"
+            />
         </div>
     </div>`
 });
