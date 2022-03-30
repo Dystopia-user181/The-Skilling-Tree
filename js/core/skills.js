@@ -49,10 +49,10 @@ export const SkillPointUpgrades = (function() {
             description: "You can increase maze size to get more skill points.",
             cost: 20
         },
-        bfs: {
+        dfs: {
             id: 2,
             title: "'Puter Science",
-            description: "Unlock Breadth first search.",
+            description: "Unlock Depth first search.",
             cost: 72
         },
         raiseSPGain1: {
@@ -74,39 +74,51 @@ export const SkillPointUpgrades = (function() {
             effect: 1.3,
             default: 1
         },
-        doubleBFS: {
+        bfs: {
             id: 5,
-            title: "Not Stupid",
-            description: "What if we BFS from *both* sides? It'll take twice as long but it might work.",
+            title: "DLS",
+            description: "Depth first search bad? Try [[the other one]]!",
             cost: 500,
-            isUnlocked: () => SkillPointUpgrades.decreaseSearchSpeed.amount >= 3,
-            onPurchase: () => Graph.newGraph()
+            isUnlocked: () => SkillPointUpgrades.decreaseSearchSpeed.amount >= 3
         },
         autoReroll: {
             id: 6,
             title: "Machine Unlearning",
-            description: "Searching automatically rerolls if you are stuck (why would you want to disable this)",
-            cost: 15000,
-            isUnlocked: () => SkillPointUpgrades.decreaseSearchSpeed.amount >= 1000
-        },
-        dfs: {
-            id: 7,
-            title: "BLS",
-            description: "Breadth first search bad? Try Depth first search instead!",
+            description: "Searching automatically rerolls if you are stuck. Decreases reroll cooldown to 5s.",
             cost: 1000,
-            isUnlocked: () => SkillPointUpgrades.decreaseSearchSpeed.amount >= 1000
+            isUnlocked: () => SkillPointUpgrades.decreaseSearchSpeed.amount >= 3,
+            effect: 5,
+            default: 10
+        },
+        doubleBFS: {
+            id: 7,
+            title: "Not Stupid",
+            description: "What if we BFS from *both* sides? It'll take twice as long but it might work.",
+            cost: 2000,
+            isUnlocked: () => SkillPointUpgrades.decreaseSearchSpeed.amount >= 3,
+            onPurchase: () => Graph.newGraph()
         },
 
 
         decreaseSearchSpeed: {
             isRebuyable: true,
             id: "decreaseSearchSpeed",
-            title: "Download More RAM",
+            title: "Download More CPU",
             description: "Speed up search by a factor of (omfggg whoo cares?)",
-            isUnlocked: () => SkillPointUpgrades.bfs.canBeApplied,
+            isUnlocked: () => SkillPointUpgrades.dfs.canBeApplied,
             cost: x => Math.ceil(1.1 ** x * 50),
             effect: x => x + 1,
             formatEffect: x => `x${x.toFixed(1)} times faster`
+        },
+        increaseMaxMapSize: {
+            isRebuyable: true,
+            id: "increaseMaxMapSize",
+            title: "Download More RAM",
+            description: "Increase map size by [[redacted]]",
+            isUnlocked: () => SkillPointUpgrades.bfs.canBeApplied,
+            cost: x => Math.ceil(1.1 ** x * 80),
+            effect: x => 2 * x,
+            formatEffect: x => `+${x} maximum map size`
         }
     }, x => x.isRebuyable ? new SkillPointRebuyableState(x) : new SkillPointUpgradeState(x));
 

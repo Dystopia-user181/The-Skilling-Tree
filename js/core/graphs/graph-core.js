@@ -72,7 +72,7 @@ export const Graph = {
     },
     reroll() {
         if (!this.canReroll) return;
-        player.maze.rerollCooldown = 10000;
+        player.maze.rerollCooldown = SkillPointUpgrades.autoReroll.effectOrDefault()*1000;
         this.newGraph();
     },
 
@@ -80,7 +80,7 @@ export const Graph = {
         return 6;
     },
     get maxSize() {
-        return 12;
+        return 12 + SkillPointUpgrades.increaseMaxMapSize.effectValue;
     },
     incrementSize() {
         player.maze.nextSize += 2;

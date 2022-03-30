@@ -214,6 +214,7 @@ Components.add({
     name: "maze-search-mode-display",
     data() {
         return {
+            isDFSUnlocked: false,
             isBFSUnlocked: false,
             isManual: true,
             searchCooldown: 2000,
@@ -223,6 +224,7 @@ Components.add({
     },
     methods: {
         update() {
+            this.isDFSUnlocked = SkillPointUpgrades.dfs.canBeApplied;
             this.isBFSUnlocked = SkillPointUpgrades.bfs.canBeApplied;
             this.isManual = player.search.mode === SEARCH_MODES.MANUAL;
             this.searchCooldown = Searching.cooldown;
@@ -234,12 +236,18 @@ Are you sure you want to do this?`)) Searching.setMode(x);
         }
     },
     template: `
-    <div v-if="isBFSUnlocked">
+    <div v-if="isDFSUnlocked">
         <br>
         <button @click="setMode(SEARCH_MODES.MANUAL)">
             Set Mode to MANUAL
         </button>
-        <button @click="setMode(SEARCH_MODES.BFS)">
+        <button @click="setMode(SEARCH_MODES.DFS)">
+            Set Mode to DEPTH FIRST SEARCH
+        </button>
+        <button
+            v-if="isBFSUnlocked"
+            @click="setMode(SEARCH_MODES.BFS)"
+        >
             Set Mode to BREADTH FIRST SEARCH
         </button>
         <br>

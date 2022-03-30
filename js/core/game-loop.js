@@ -13,7 +13,7 @@ export function gameLoop(diff = Date.now() - lastTick) {
             player.maze.skillPointDelay = 0;
         }
     }
-    if (SkillPointUpgrades.bfs.canBeApplied && !Graph.atEnd && player.search.mode !== SEARCH_MODES.MANUAL) {
+    if (SkillPointUpgrades.dfs.canBeApplied && !Graph.atEnd && player.search.mode !== SEARCH_MODES.MANUAL) {
         player.search.cooldown += diff;
         const cooldownTime = Searching.cooldown;
         if (player.search.cooldown >= cooldownTime) {
