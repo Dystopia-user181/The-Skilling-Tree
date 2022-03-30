@@ -3,7 +3,7 @@ export const DFS = {
         if (Graph.atEnd) return;
         const dfs = player.depth;
         if (!dfs.stack.length) {
-            if (SkillPointUpgrades.autoReroll.canBeApplied) Graph.autoReroll();
+            if (SkillPointUpgrades.autoReroll.canBeApplied) Graph.reroll();
             return;
         }
         let node = Node(dfs.stack[dfs.stack.length - 1] ?? player.maze.currentNode);
