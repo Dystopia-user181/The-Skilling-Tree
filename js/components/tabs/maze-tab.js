@@ -64,7 +64,7 @@ Components.add({
             this.isEnd = this.node.isEnd;
         },
         handleClick() {
-            if (!this.isDisabled && !Graph.atEnd) {
+            if (!this.isDisabled && !Graph.atEnd && !this.isAuto) {
                 Graph.goto(this.id);
             }
         }
