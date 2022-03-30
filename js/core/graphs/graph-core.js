@@ -39,7 +39,7 @@ export const Graph = {
             for (let x = xMin; x <= xMax; x++) {
                 for (let y = yMin; y <= yMax; y++) {
                     if (x !== decomposed[0] || y !== decomposed[0]) {
-                        if (Math.random() > 0.8 / odds) {
+                        if (Math.random() > chance / odds) {
                             continue;
                         }
                         const postProc = [i, this.compose([x, y], n)].sort((a, b) => a - b).join(",");
