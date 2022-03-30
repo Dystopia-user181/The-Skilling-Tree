@@ -19,7 +19,7 @@ export const Graph = {
         if (player.search.mode === SEARCH_MODES.BFS) {
             BFS.moveOne();
         } else {
-            // Wait until DFS is implemented
+            DFS.moveOne();
         }
         EventHub.dispatch(GAME_EVENTS.MAZE_MOVED);
         EventHub.dispatch(GAME_EVENTS.MAZE_RESET_PROGRESS);
