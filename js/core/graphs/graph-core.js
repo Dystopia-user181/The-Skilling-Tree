@@ -24,16 +24,17 @@ export const Graph = {
         EventHub.dispatch(GAME_EVENTS.NEW_MAZE);
     },
     resetProgress() {
+        const s2 = player.maze.currentSize * player.maze.currentSize;
         player.records.currentTime = 0;
         player.maze.currentNode = 0;
         player.breadth.queue = [];
-        player.breadth.seen = [];
+        player.breadth.seen = new Array(s2).fill(false);
         player.breadth.otherQueue = [];
-        player.breadth.otherSeen = [];
+        player.breadth.otherSeen = new Array(s2).fill(false);
         player.breadth.otherCurrentNode = this.endPoint;
         player.depth.stack = [0];
-        player.depth.seen = [];
-        player.depth.dead = [];
+        player.depth.seen = new Array(s2).fill(false);
+        player.depth.dead = new Array(s2).fill(false);
         player.search.cooldown = 0;
         if (player.search.mode === SEARCH_MODES.BFS) {
             BFS.moveOne();
@@ -138,12 +139,12 @@ class NodeState {
 
     get isSeen() {
         if (player.search.mode === SEARCH_MODES.MANUAL) return false;
-        return (player.search.mode === SEARCH_MODES.BFS ? player.breadth.seen : player.depth.seen).includes(this.id);
+        return (player.search.mode === SEARCH_MODES.BFS ? player.breadth.seen : player.depth.seen)[this.id];
     }
 
     get isDead() {
         if (player.search.mode !== SEARCH_MODES.DFS) return false;
-        return player.depth.dead.includes(this.id);
+        return player.depth.dead[this.id];
     }
 
     get isCurrent() {
@@ -165,7 +166,7 @@ class NodeState {
 
     get isSeenBySecondBFS() {
         if (!SkillPointUpgrades.doubleBFS.canBeApplied || player.search.mode !== SEARCH_MODES.BFS) return false;
-        return player.breadth.otherSeen.includes(this.id);
+        return player.breadth.otherSeen[this.id];
     }
 
     get isInSecondBFSQueue() {

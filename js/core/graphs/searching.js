@@ -22,6 +22,7 @@ export const Searching = {
         }
         cooldown /= PickapathUpgrades.connectionsPair.oneConnection.effectOrDefault();
         cooldown /= PickapathUpgrades.connectionsPair.twoConnections.effectOrDefault();
+        if (player.search.mode === SEARCH_MODES.DFS) cooldown /= PickapathUpgrades.searchImprovePair.dfs.effectOrDefault();
         return cooldown;
     }
 }

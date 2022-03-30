@@ -20,15 +20,15 @@ export function getStartPlayer() {
         },
         breadth: {
             queue: [],
-            seen: [],
+            seen: Array(36).fill(false),
             otherQueue: [],
-            otherSeen: [],
+            otherSeen: Array(36).fill(false),
             otherCurrentNode: 35
         },
         depth: {
             stack: [0],
-            seen: [],
-            dead: []
+            seen: Array(36).fill(false),
+            dead: Array(36).fill(false)
         },
         search: {
             cooldown: 0,
@@ -39,7 +39,8 @@ export function getStartPlayer() {
             sizes: {
                 30: Number.MAX_VALUE,
                 50: Number.MAX_VALUE,
-                64: Number.MAX_VALUE
+                64: Number.MAX_VALUE,
+                100: Number.MAX_VALUE
             }
         },
         options: {

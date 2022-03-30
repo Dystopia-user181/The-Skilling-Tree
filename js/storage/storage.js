@@ -1,3 +1,5 @@
+import { Migrations } from "./migrations.js";
+
 export const GameStorage = {
     save() {
         localStorage.setItem(this.saveKey, JSON.stringify(player));
@@ -19,11 +21,17 @@ export const GameStorage = {
     normalisePlayer(playerObj = player, defaultObj = getStartPlayer()) {
         for (const i in defaultObj) {
             const prop = defaultObj[i];
-            if (playerObj[i] === undefined) {
+            if (playerObj[i] === undefined || playerObj[i].constructor !== prop.constructor) {
                 playerObj[i] = prop;
             } else if (prop.constructor === Object) {
                 this.normalisePlayer(playerObj[i], prop);
             }
+        }
+    },
+    migratePlayer(player) {
+        for (let i = player.version; i <= Migrations.length; i++) {
+            Migrations[i](player);
+            player.version = i + 1;
         }
     },
     get saveKey() {

@@ -167,7 +167,8 @@ export const SkillPointUpgrades = (function() {
             description: "Speed up search by a factor of (omfggg whoo cares?)",
             isUnlocked: () => SkillPointUpgrades.dfs.canBeApplied,
             cost: x => Math.ceil(1.1 ** x * 50),
-            effect: x => x + 1,
+            effect: x => (x + 1) ** PickapathUpgrades.chooseCPUPair.power.effectOrDefault()
+                * PickapathUpgrades.chooseCPUPair.multiply.effectOrDefault(),
             formatEffect: x => `x${x.toFixed(1)} times faster`
         },
         increaseMaxMapSize: {
@@ -255,7 +256,7 @@ export const PickapathUpgrades = (function() {
             upgrades: {
                 first: {
                     id: "a",
-                    description: "Unlock a new upgrade."
+                    description: `Unlock a new upgrade.`
                 },
                 second: {
                     id: "b",
@@ -265,6 +266,48 @@ export const PickapathUpgrades = (function() {
             isUnlocked: () => SkillPointUpgrades.doubleBFS.canBeApplied && player.records.sizes[64] < 24000,
             unlockText: () => `Complete a 64x64 maze or larger within 24s.
             Currently: ${(player.records.sizes[64] / 1000).toFixed(3)}s`
+        },
+        chooseCPUPair: {
+            id: 4,
+            upgrades: {
+                first: {
+                    id: "power",
+                    description: "CPUs ^1.25.",
+                    effect: 1.25,
+                    default: 1,
+                    formatEffect: x => `^${x}`
+                },
+                second: {
+                    id: "multiply",
+                    description: "CPUs x3.",
+                    effect: 3,
+                    default: 1,
+                    formatEffect: x => `x${x}`
+                },
+            },
+            isUnlocked: () => SkillPointUpgrades.doubleBFS.canBeApplied && player.records.sizes[100] < 40000,
+            unlockText: () => `Complete a 100x100 maze or larger within 40s.
+            Currently: ${(player.records.sizes[100] / 1000).toFixed(3)}s`
+        },
+        searchImprovePair: {
+            id: 5,
+            upgrades: {
+                first: {
+                    id: "dfs",
+                    description: "New technology 'Death first search' allows DFS to be x12 quicker.",
+                    effect: 12,
+                    default: 1,
+                    formatEffect: x => `x${x}`
+                },
+                second: {
+                    id: "bfs",
+                    description: `New technology 'Bread first search' processes all queued nodes at once with a
+                    maximum of 8 nodes.`
+                },
+            },
+            isUnlocked: () => SkillPointUpgrades.doubleBFS.canBeApplied && player.records.sizes[100] < 40000,
+            unlockText: () => `Complete a 100x100 maze or larger within 40s.
+            Currently: ${(player.records.sizes[100] / 1000).toFixed(3)}s`
         }
     }, x => new PickapathState(x));
     

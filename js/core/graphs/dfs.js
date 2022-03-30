@@ -8,10 +8,10 @@ export const DFS = {
         }
         let node = Node(dfs.stack[dfs.stack.length - 1] ?? player.maze.currentNode);
         Graph.goto(node.id);
-        dfs.seen.push(node.id);
+        dfs.seen[node.id] = true;
         if (Graph.atEnd) return;
         if (node.neighbours.every(x => Node(x).isSeen)) {
-            dfs.dead.push(node.id);
+            dfs.dead[node.id] = true;
             dfs.stack.pop();
             if (dfs.stack.length) {
                 node = Node(dfs.stack[dfs.stack.length - 1]);

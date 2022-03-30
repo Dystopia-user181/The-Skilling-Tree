@@ -222,11 +222,13 @@ Components.add({
             isManual: true,
             searchCooldown: 2000,
             currentSearchTime: 0,
+            mode: 0,
             SEARCH_MODES
         };
     },
     methods: {
         update() {
+            this.mode = player.search.mode;
             this.isDFSUnlocked = SkillPointUpgrades.dfs.canBeApplied;
             this.isBFSUnlocked = SkillPointUpgrades.bfs.canBeApplied;
             this.isManual = player.search.mode === SEARCH_MODES.MANUAL;
@@ -241,14 +243,21 @@ Are you sure you want to do this?`)) Searching.setMode(x);
     template: `
     <div v-if="isDFSUnlocked">
         <br>
-        <button @click="setMode(SEARCH_MODES.MANUAL)">
+        <button
+            :disabled="mode === SEARCH_MODES.MANUAL"
+            @click="setMode(SEARCH_MODES.MANUAL)"
+        >
             Set Mode to MANUAL
         </button>
-        <button @click="setMode(SEARCH_MODES.DFS)">
+        <button 
+            :disabled="mode === SEARCH_MODES.DFS"
+            @click="setMode(SEARCH_MODES.DFS)"
+        >
             Set Mode to DEPTH FIRST SEARCH
         </button>
         <button
             v-if="isBFSUnlocked"
+            :disabled="mode === SEARCH_MODES.BFS"
             @click="setMode(SEARCH_MODES.BFS)"
         >
             Set Mode to BREADTH FIRST SEARCH
