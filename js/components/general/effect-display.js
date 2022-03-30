@@ -23,6 +23,7 @@ Components.add({
     },
     methods: {
         update() {
+            if (!this.isValid) return;
             this.effectDisplay = this.config.config.formatEffect(this.config.effectValue);
         }
     },

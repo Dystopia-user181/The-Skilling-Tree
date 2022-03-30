@@ -20,6 +20,8 @@ export const Searching = {
         if (SkillPointUpgrades.doubleBFS.canBeApplied && player.search.mode === SEARCH_MODES.BFS) {
             cooldown *= 2;
         }
+        cooldown /= PickapathUpgrades.connectionsPair.oneConnection.effectOrDefault();
+        cooldown /= PickapathUpgrades.connectionsPair.twoConnections.effectOrDefault();
         return cooldown;
     }
 }

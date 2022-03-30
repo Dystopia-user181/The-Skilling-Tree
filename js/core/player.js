@@ -1,11 +1,13 @@
 export function getStartPlayer() {
     return {
         skillPoints: 0,
+        bestSkillPoints: 0,
         progression: {
             noSkillIssue: false
         },
         skills: {
             skillBits: 0,
+            pickapathBits: 0,
             rebuyables: SkillPointRebuyableState.initPlayer(SkillPointUpgrades)
         },
         maze: {
@@ -31,6 +33,13 @@ export function getStartPlayer() {
         search: {
             cooldown: 0,
             mode: 0
+        },
+        records: {
+            currentTime: 0,
+            sizes: {
+                30: Number.MAX_VALUE,
+                50: Number.MAX_VALUE
+            }
         },
         options: {
             lastOpenTab: 0,

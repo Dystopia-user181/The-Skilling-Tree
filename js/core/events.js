@@ -1,4 +1,4 @@
-export class EventHub {
+window.EventHub = class EventHub {
     constructor() {
         this._handlers = {};
     }

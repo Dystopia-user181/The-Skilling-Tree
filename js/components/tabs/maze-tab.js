@@ -163,7 +163,8 @@ Components.add({
             currentSize: 6,
             nextSize: 6,
             minSize: 6,
-            maxSize: 6
+            maxSize: 6,
+            currentTime: 0
         };
     },
     methods: {
@@ -173,6 +174,7 @@ Components.add({
             this.nextSize = player.maze.nextSize;
             this.minSize = Graph.minSize;
             this.maxSize = Graph.maxSize;
+            this.currentTime = player.records.currentTime / 1000;
         },
         increment() {
             Graph.incrementSize();
@@ -204,7 +206,8 @@ Components.add({
             +
         </button>
         <br>
-        Current Size: {{ currentSize }}
+        Current Size: {{ currentSize }} &nbsp;
+        &nbsp; Current Time: {{ currentTime.toFixed(3) }}s
         <br>
         <br>
     </div>`
@@ -256,7 +259,7 @@ Are you sure you want to do this?`)) Searching.setMode(x);
                 {{ (1000 / searchCooldown).toFixed(1) }} searches/s
             </span>
             <span v-else>
-                {{ ((searchCooldown - currentSearchTime) * 0.001).toFixed(3) }}s until next search
+                {{ ((searchCooldown - currentSearchTime) / 1000).toFixed(3) }}s until next search
             </span>
         </template>
         <br>
@@ -273,7 +276,9 @@ Components.add({
             size: 0,
             rerollCooldown: 0,
             canReroll: false,
-            isAuto: false
+            isAuto: false,
+            shouldShowLargeMazeRepresentation: false,
+            spGain: 0
         };
     },
     created() {
@@ -286,6 +291,7 @@ Components.add({
         update() {
             this.rerollCooldown = player.maze.rerollCooldown / 1000;
             this.canReroll = Graph.canReroll;
+            this.spGain = SkillPoints.gain;
         },
         reroll() {
             Graph.reroll();
@@ -294,15 +300,17 @@ Components.add({
             this.isAuto = player.search.mode !== SEARCH_MODES.MANUAL;
         },
         updateGraph() {
+            const size = player.maze.currentSize;
+            this.shouldShowLargeMazeRepresentation = size <= 40;
+            if (!this.shouldShowLargeMazeRepresentation) return;
             const connections = new Set();
             const graph = player.maze.graph;
             for (const node in graph) {
                 for (const otherNode of graph[node]) {
-                    connections.add([node, otherNode].sort((a, b) => a - b).join(","));
+                    connections.add(diSequenceAscending(node, otherNode));
                 }
             }
             this.connections = connections;
-            const size = player.maze.currentSize;
             this.size = size * size;
             this.svgSize = 45 * size
         }
@@ -322,6 +330,7 @@ Components.add({
             </span>
         </button>
         <div
+            v-if="shouldShowLargeMazeRepresentation"
             class="l-maze"
             :class="{
                 'l-maze--auto': isAuto
@@ -344,6 +353,13 @@ Components.add({
                     :isAuto="isAuto"
                 />
             </svg>
+        </div>
+        <div v-else>
+            SP Gain: {{ spGain }}
+            <br><br>
+            The maze is too big to be represented using nodes
+            <br>
+            When I say "too big" I don't mean "oh it lags a little", I mean "Vue refuses to render anything".
         </div>
     </div>`
 });

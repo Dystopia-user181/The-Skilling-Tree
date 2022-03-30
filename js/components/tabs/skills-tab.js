@@ -104,4 +104,4 @@ Components.add({
             :upgrade="upgrade"
         />
     </div>`
-})
+});

@@ -24,6 +24,13 @@ window.matchBits = function matchBits(bits, id) {
     return Boolean(bits & (1 << id))
 }
 
+window.diSequenceAscending = function sequenceFrom(a, b) {
+    if (a > b) {
+        return b + "," + a;
+    }
+    return a + "," + b;
+}
+
 window.NotImplementedError = class NotImplementedError extends Error {
     constructor() {
       super("The method is not implemented.");

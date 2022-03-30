@@ -2,6 +2,7 @@ import "./general/effect-display.js";
 import "./tabs/maze-tab.js";
 import "./tabs/options-tab.js";
 import "./tabs/skills-tab.js";
+import "./tabs/superskills-tab.js";
 
 Components.add({
     name: "game-ui",
