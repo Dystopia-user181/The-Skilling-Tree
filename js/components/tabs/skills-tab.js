@@ -75,7 +75,7 @@ Components.add({
         <br>
         <effect-display :config="upgrade"/>
         <br><br>
-        Cost: {{ upgrade.cost }} Skill Points
+        Cost: {{ cost }} Skill Points
     </button>`
 });
 
