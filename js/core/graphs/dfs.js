@@ -20,6 +20,11 @@ export const DFS = {
             }
         }
 
+        if (node.neighbours.includes(Graph.endPoint)) {
+            dfs.stack.push(Graph.endPoint);
+            EventHub.dispatch(GAME_EVENTS.MAZE_MOVED);
+            return;
+        }
         for (const neighbour of node.neighbours) {
             const node = Node(neighbour);
             if (!node.isSeen) {
