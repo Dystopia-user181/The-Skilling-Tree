@@ -38,7 +38,8 @@ export function getStartPlayer() {
             currentTime: 0,
             sizes: {
                 30: Number.MAX_VALUE,
-                50: Number.MAX_VALUE
+                50: Number.MAX_VALUE,
+                64: Number.MAX_VALUE
             }
         },
         options: {

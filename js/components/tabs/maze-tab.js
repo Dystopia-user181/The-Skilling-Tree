@@ -355,7 +355,7 @@ Components.add({
             </svg>
         </div>
         <div v-else>
-            SP Gain: {{ spGain }}
+            Skill Points Gain: {{ spGain }}
             <br><br>
             The maze is too big to be represented using nodes
             <br>

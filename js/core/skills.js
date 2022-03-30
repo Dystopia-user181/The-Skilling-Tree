@@ -3,7 +3,7 @@ import { GameMechanicState, BitPurchaseableState, RebuyableMechanicState } from 
 export const SkillPoints = {
     get gain() {
         let base = 1 + (player.maze.currentSize - 6) / 2;
-        return Math.floor((base * this.multiplier) ** this.power);
+        return Math.floor((base * this.multiplier) ** this.power) * SkillPointUpgrades.spMult.effectValue;
     },
 
     get multiplier() {
@@ -179,6 +179,17 @@ export const SkillPointUpgrades = (function() {
             cost: x => Math.ceil(1.1 ** x * 80),
             effect: x => 2 * x,
             formatEffect: x => `+${x} maximum maze size`
+        },
+        spMult: {
+            isRebuyable: true,
+            id: "spMult",
+            title: "Matter Dimensions",
+            description: `So this upgrade cost increases by tenfold and its effect by twofold for
+            each purchase. Sounds familiar?`,
+            isUnlocked: () => PickapathUpgrades.fakeIPMult.isUnlocked,
+            cost: x => Math.ceil(10 ** x * 1000),
+            effect: x => 2 ** x,
+            formatEffect: x => `x${x} Skill Points gain`
         }
     }, x => x.isRebuyable ? new SkillPointRebuyableState(x) : new SkillPointUpgradeState(x));
 
@@ -238,6 +249,22 @@ export const PickapathUpgrades = (function() {
             isUnlocked: () => SkillPointUpgrades.doubleBFS.canBeApplied && player.records.sizes[50] < 100000,
             unlockText: () => `Complete a 50x50 maze or larger within 100s.
             Currently: ${(player.records.sizes[50] / 1000).toFixed(3)}s`
+        },
+        fakeIPMult: {
+            id: 3,
+            upgrades: {
+                first: {
+                    id: "a",
+                    description: "Unlock a new upgrade."
+                },
+                second: {
+                    id: "b",
+                    description: "UNLOCK A NEW UPGRADE!!!!!!!!!!!!!1111"
+                },
+            },
+            isUnlocked: () => SkillPointUpgrades.doubleBFS.canBeApplied && player.records.sizes[64] < 24000,
+            unlockText: () => `Complete a 64x64 maze or larger within 24s.
+            Currently: ${(player.records.sizes[64] / 1000).toFixed(3)}s`
         }
     }, x => new PickapathState(x));
     
