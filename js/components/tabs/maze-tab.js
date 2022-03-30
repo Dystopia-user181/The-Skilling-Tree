@@ -314,7 +314,7 @@ Components.add({
         updateGraph() {
             const size = player.maze.currentSize;
             this.length = size;
-            this.shouldShowLargeMazeRepresentation = size <= 40;
+            this.shouldShowLargeMazeRepresentation = size <= 32;
             if (!this.shouldShowLargeMazeRepresentation) {
                 this.$nextTick(
                     () => this.ctx = this.$refs.canvas.getContext("2d")
