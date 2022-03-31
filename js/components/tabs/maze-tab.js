@@ -258,28 +258,25 @@ Vue.component("maze-search-mode-display", {
             this.currentSearchTime = player.search.cooldown;
         },
         setMode(x) {
-            if (confirm(`Switching will reset your maze progress!
-Are you sure you want to do this?`)) Searching.setMode(x);
+            if (confirm(`Switching will [[not]] reset your maze progress!
+Are you [[un]]sure you want to do this?`)) Searching.setMode(x);
         }
     },
     template: `
     <div v-if="isDFSUnlocked">
         <br>
         <button
-            :disabled="mode === SEARCH_MODES.MANUAL"
             @click="setMode(SEARCH_MODES.MANUAL)"
         >
             Set Mode to MANUAL
         </button>
         <button 
-            :disabled="mode === SEARCH_MODES.DFS"
             @click="setMode(SEARCH_MODES.DFS)"
         >
             Set Mode to DEPTH FIRST SEARCH
         </button>
         <button
             v-if="isBFSUnlocked"
-            :disabled="mode === SEARCH_MODES.BFS"
             @click="setMode(SEARCH_MODES.BFS)"
         >
             Set Mode to BREADTH FIRST SEARCH

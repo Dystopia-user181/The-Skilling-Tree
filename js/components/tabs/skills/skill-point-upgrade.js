@@ -23,7 +23,6 @@ Vue.component("skill-point-rebuyable", {
     <button
         v-if="isUnlocked"
         class="o-upgrade"
-        :disabled="!canBeBought"
         @click="upgrade.purchase()"
     >
         <b>{{ upgrade.config.title }}</b>

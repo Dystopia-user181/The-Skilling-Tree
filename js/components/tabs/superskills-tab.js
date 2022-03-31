@@ -82,27 +82,11 @@ Vue.component("pickapath-pair", {
 });
 
 Vue.component("superskills-tab", {
-    data() {
-        return {
-            records: {}
-        }
-    },
     computed: {
         pickapaths: () => PickapathUpgrades
     },
-    methods: {
-        update() {
-            this.records = {... player.records.sizes};
-        }
-    },
     template: `
     <div>
-        <br>
-        Records:<br>
-        <span v-for="(time, size) in records">
-            {{ size }}x{{ size }}: {{ formatTime(time) }}
-            <br>
-        </span>
         <br>
         <b>
             You can only choose wisely
