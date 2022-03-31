@@ -68,14 +68,14 @@ export const Graph = {
                         if (LCG() > chance / odds) {
                             continue;
                         }
-                        const postProc = diSequenceAscending(i, this.compose(x, y, n));
+                        const postProc = diSequenceAscending(i, this.compose(x, y, n), n);
                         connections.add(postProc);
                     }
                 }
             }
         }
         for (const connection of connections) {
-            const decomposed = connection.split(",").map(x => Number(x));
+            const decomposed = [connection % n2, Math.floor(connection / n2)];
             newGraph[decomposed[0]].push(decomposed[1]);
             newGraph[decomposed[1]].push(decomposed[0]);
         }

@@ -103,10 +103,10 @@ export const BFS = {
         return SkillPointUpgrades.bfsBulk.effectValue;
     },
     get bulkSlowdown() {
-        return 2 ** player.breadth.bulkLevels;
+        return 3 ** player.breadth.bulkLevels;
     },
     get bulkIncrease() {
-        return 3 ** player.breadth.bulkLevels;
+        return 9 ** player.breadth.bulkLevels;
     },
     incrementBulk() {
         player.breadth.bulkLevels++;

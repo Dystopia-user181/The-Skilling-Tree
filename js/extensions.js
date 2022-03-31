@@ -24,11 +24,11 @@ window.matchBits = function matchBits(bits, id) {
     return Boolean(bits & (1 << id))
 }
 
-window.diSequenceAscending = function sequenceFrom(a, b) {
+window.diSequenceAscending = function sequenceFrom(a, b, n) {
     if (a > b) {
-        return b + "," + a;
+        return a * n * n + b;
     }
-    return a + "," + b;
+    return b * n * n + a;
 }
 
 window.format = function format(x, places = 2, placesBefore1e6 = 0) {

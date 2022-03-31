@@ -103,12 +103,14 @@ Vue.component("maze-edge", {
     data() {
         return {
             hasQueue: false,
-            atEnd: false
+            atEnd: false,
+            size: 6
         }
     },
     computed: {
         decomposed() {
-            return this.connection.split(",").map(x => Number(x));
+            const n2 = (this.size * this.size);
+            return [this.connection % n2, Math.floor(this.connection / n2)];
         },
         xy1() {
             return Graph.decompose(this.decomposed[0]);
@@ -133,6 +135,7 @@ Vue.component("maze-edge", {
         this.on(GAME_EVENTS.MAZE_MOVED, () => this.onMazeMoved());
         this.onMazeMoved();
         this.on(GAME_EVENTS.NEW_MAZE, () => this.onNewMaze());
+        this.size = player.maze.currentSize;
     },
     methods: {
         onMazeMoved() {
@@ -146,6 +149,7 @@ Vue.component("maze-edge", {
             if (this.decomposed.some(x => Node(x).shouldntExist)) return;
             this.$recompute("xy1");
             this.$recompute("xy2");
+            this.size = player.maze.currentSize;
         }
     },
     template: `
@@ -361,7 +365,7 @@ Vue.component("maze-tab", {
             const graph = player.maze.graph;
             for (const node in graph) {
                 for (const otherNode of graph[node]) {
-                    connections.add(diSequenceAscending(node, otherNode));
+                    connections.add(diSequenceAscending(node, otherNode, size));
                 }
             }
             this.connections = connections;
