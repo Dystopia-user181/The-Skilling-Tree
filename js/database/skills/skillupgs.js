@@ -99,5 +99,15 @@ GameDatabase.skills.upgrades = {
         cost: x => Math.ceil(10 ** x * 1000),
         effect: x => 2 ** x,
         formatEffect: x => `x${x} Skill Points gain`
+    },
+    bfsBulk: {
+        isRebuyable: true,
+        id: "bfsBulk",
+        title: "Bred first surge",
+        description: `+1 option for BFS bulk.`,
+        isUnlocked: () => PickapathUpgrades.spMultPowPair.isUnlocked,
+        cost: x => Math.ceil(5 ** x * 2e9),
+        effect: x => x,
+        formatEffect: x => `+${x} option${x === 1 ? "" : "s"}`
     }
 };

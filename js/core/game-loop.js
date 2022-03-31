@@ -3,6 +3,10 @@ export function gameLoop(diff = Date.now() - lastTick) {
     lastTick = Date.now();
     diff = Math.min(diff, 10000);
 
+    if (player.options.lastSaveTimer < lastTick - 10000) {
+        GameStorage.save();
+    }
+
     if (player.maze.rerollCooldown > 0) {
         player.maze.rerollCooldown = Math.max(player.maze.rerollCooldown - diff, 0);
     }
@@ -53,11 +57,6 @@ export function gameLoop(diff = Date.now() - lastTick) {
                 }
             }
         }
-    }
-
-    if (player.options.lastSaveTimer < lastTick - 10000) {
-        GameStorage.save();
-        player.options.lastSaveTimer = lastTick;
     }
     GameUI.update();
 }

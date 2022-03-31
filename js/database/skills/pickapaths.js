@@ -115,9 +115,9 @@ GameDatabase.skills.pickapaths = {
         upgrades: {
             first: {
                 id: "power",
-                description: `^1.6 Skill Points gain before multipliers, and unlock a new buyable
+                description: `^1.65 Skill Points gain before multipliers, and unlock a new buyable
                 [what the hell is that]. Surely nothing can go wrong?`,
-                effect: 1.6,
+                effect: 1.65,
                 default: 1,
                 formatEffect: x => `^${x}`
             },
@@ -125,9 +125,9 @@ GameDatabase.skills.pickapaths = {
                 id: "multiply",
                 description: `Gain a decaying multiplier to Skill Points. NOW'S YOUR CHANCE TO BE A
                 [[ability-rebuy-mechanic-owner]]`,
-                effect: () => 30 * 0.4 ** (player.records.currentTime / 1000),
+                effect: () => 100 * 0.7 ** (player.records.currentTime / 1000),
                 default: 1,
-                formatEffect: x => `x${x}`
+                formatEffect: x => `x${format(x, 3, 3)}`
             }
         },
         isUnlocked: () => SkillPointUpgrades.doubleBFS.canBeApplied && player.records.sizes[200] < 4000,

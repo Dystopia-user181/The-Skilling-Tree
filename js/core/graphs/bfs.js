@@ -36,10 +36,11 @@ export const BFS = {
                 return;
             }
         }
-        const bulk = PickapathUpgrades.searchImprovePair.bfs.canBeApplied;
-        const maxBulk = bulk ? Math.max(Math.min(bfs.queue.length, 8), 1) : 1;
-        const maxBulkOther = bulk ? Math.max(Math.min(bfs.otherQueue.length, 8), 1) : 1;
-        for (let i = 0; i < maxBulk; i++) {
+        const isBulk = PickapathUpgrades.searchImprovePair.bfs.canBeApplied;
+        const bulkCap = 8 * this.bulkIncrease;
+        const bulk = isBulk ? Math.max(Math.min(bfs.queue.length, bulkCap), 1) : 1;
+        const bulkOther = isBulk ? Math.max(Math.min(bfs.otherQueue.length, bulkCap), 1) : 1;
+        for (let i = 0; i < bulk; i++) {
             const node = Node(bfs.queue.shift() ?? player.maze.currentNode);
             if (node.isSeen) {
                 if (SkillPointUpgrades.autoReroll.canBeApplied) Graph.reroll();
@@ -75,7 +76,7 @@ export const BFS = {
                 Graph.updateThisTile(found);
                 return;
             }
-            for (let i = 0; i < maxBulkOther; i++) {
+            for (let i = 0; i < bulkOther; i++) {
                 const otherNode = Node(bfs.otherQueue.shift() ?? bfs.otherCurrentNode);
                 Graph.updateThisTile(bfs.otherCurrentNode);
                 Graph.updateThisTile(otherNode.id);
@@ -96,5 +97,23 @@ export const BFS = {
             }
         }
         EventHub.dispatch(GAME_EVENTS.MAZE_MOVED);
+    },
+
+    get maxBulkLevels() {
+        return SkillPointUpgrades.bfsBulk.effectValue;
+    },
+    get bulkSlowdown() {
+        return 1.5 ** player.breadth.bulkLevels;
+    },
+    get bulkIncrease() {
+        return 3 ** player.breadth.bulkLevels;
+    },
+    incrementBulk() {
+        player.breadth.bulkLevels++;
+        if (player.breadth.bulkLevels > this.maxBulkLevels) player.breadth.bulkLevels--;
+    },
+    decrementBulk() {
+        player.breadth.bulkLevels--;
+        if (player.breadth.bulkLevels < 0) player.breadth.bulkLevels++;
     }
 };

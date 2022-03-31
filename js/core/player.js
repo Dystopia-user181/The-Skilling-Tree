@@ -23,7 +23,8 @@ export function getStartPlayer() {
             seen: Array(36).fill(false),
             otherQueue: [],
             otherSeen: Array(36).fill(false),
-            otherCurrentNode: 35
+            otherCurrentNode: 35,
+            bulkLevels: 0
         },
         depth: {
             stack: [0],

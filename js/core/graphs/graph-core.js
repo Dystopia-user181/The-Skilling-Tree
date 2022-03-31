@@ -110,12 +110,12 @@ export const Graph = {
     get maxSize() {
         return 12 + SkillPointUpgrades.increaseMaxMapSize.effectValue;
     },
-    incrementSize() {
-        player.maze.nextSize += 2;
+    incrementSize(x = 2) {
+        player.maze.nextSize += x;
         player.maze.nextSize = Math.min(player.maze.nextSize, this.maxSize);
     },
-    decrementSize() {
-        player.maze.nextSize -= 2;
+    decrementSize(x = 2) {
+        player.maze.nextSize -= x;
         player.maze.nextSize = Math.max(player.maze.nextSize, this.minSize);
     },
 

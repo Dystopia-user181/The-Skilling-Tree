@@ -78,7 +78,13 @@ Vue.component("maze-node", {
         }"
         @click="handleClick"
     >
-        {{ isEnd ? format(spGain, 3) + "SP" : id }}
+        {{ isEnd ? (spGain < 1e4 ? format(spGain, 3) : "") + "SP" : id }}
+        <div
+            v-if="isEnd && spGain >= 1e4"
+            class="o-maze-node__tooltip"
+        >
+            {{ format(spGain, 3) }}SP
+        </div>
     </div>`
 });
 
@@ -173,12 +179,12 @@ Vue.component("maze-size-display", {
             this.maxSize = Graph.maxSize;
             this.currentTime = player.records.currentTime;
         },
-        increment() {
-            Graph.incrementSize();
+        increment(x = 2) {
+            Graph.incrementSize(x);
             this.update();
         },
-        decrement() {
-            Graph.decrementSize();
+        decrement(x = 2) {
+            Graph.decrementSize(x);
             this.update();
         }
     },
@@ -186,9 +192,17 @@ Vue.component("maze-size-display", {
     <div v-if="isUnlocked">
         Next Size:
         <button
+            v-if="maxSize >= 100"
             class="o-slider-button"
             :disabled="nextSize <= minSize"
-            @click="decrement"
+            @click="decrement(20)"
+        >
+            - -
+        </button>
+        <button
+            class="o-slider-button"
+            :disabled="nextSize <= minSize"
+            @click="decrement(2)"
         >
             -
         </button>
@@ -198,9 +212,17 @@ Vue.component("maze-size-display", {
         <button
             class="o-slider-button"
             :disabled="nextSize >= maxSize"
-            @click="increment"
+            @click="increment(2)"
         >
             +
+        </button>
+        <button
+            v-if="maxSize >= 100"
+            class="o-slider-button"
+            :disabled="nextSize >= maxSize"
+            @click="increment(20)"
+        >
+            ++
         </button>
         <br>
         Current Size: {{ currentSize }} &nbsp;

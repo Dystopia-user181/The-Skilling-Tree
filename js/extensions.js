@@ -43,6 +43,20 @@ window.formatTime = function formatTime(x) {
     return `${format(x / 1000, 3, 3)}s`;
 }
 
+window.pureObjRef = function pureObjRef(x) {
+	return x && (x.constructor == Object || Array.isArray(x));
+}
+window.deepcopy = function deepcopy(thing) {
+	let val = new thing.constructor();
+	for (let i in thing) {
+		if (pureObjRef(thing[i]))
+			val[i] = deepcopy(thing[i]);
+		else
+			val[i] = thing[i];
+	}
+	return val;
+}
+
 window.NotImplementedError = class NotImplementedError extends Error {
     constructor() {
       super("The method is not implemented.");

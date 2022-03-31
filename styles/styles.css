@@ -38,6 +38,8 @@ body {
 }
 
 .o-maze-node--finish {
+    width: 31px;
+    height: 31px;
     background-color: #0d0;
 }
 
@@ -87,6 +89,36 @@ body {
     stroke: #09a9;
 }
 
+.o-maze-node__tooltip {
+    visibility: hidden;
+    width: 160px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    position: absolute;
+    z-index: 1;
+    bottom: 120%;
+    left: 50%;
+    margin-left: -80px;
+    font-size: 13px;
+}
+
+.o-maze-node__tooltip::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: black transparent transparent transparent;
+}
+
+.o-maze-node--finish:hover .o-maze-node__tooltip {
+  visibility: visible;
+}
 
 .l-maze {
     position: relative;
