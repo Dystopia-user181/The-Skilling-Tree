@@ -63,6 +63,9 @@ Vue.component("tech-tab", {
             >
                 Would be better than this
             </a>
+            <br>
+            <br>
+            Drink Water
         </template>
     </div>`
 });
