@@ -93,10 +93,10 @@ GameDatabase.skills.upgrades = {
         isRebuyable: true,
         id: "spMult",
         title: "Matter Dimensions",
-        description: `So this upgrade cost increases by tenfold and its effect by twofold for
+        description: `So this upgrade cost increases by ninefold and its effect by twofold for
         each purchase. Sounds familiar?`,
         isUnlocked: () => PickapathUpgrades.fakeIPMult.isUnlocked,
-        cost: x => Math.ceil(10 ** x * 1000),
+        cost: x => Math.ceil(9 ** x * 1000),
         effect: x => 2 ** x,
         formatEffect: x => `x${x} Skill Points gain`
     },

@@ -62,8 +62,18 @@ export class Currency {
 
 Currency.skillPoints = new class extends Currency {
     get value() { return player.skillPoints; }
-    set value(x) { 
+    set value(x) {
         player.skillPoints = x;
         player.bestSkillPoints = Math.max(player.bestSkillPoints, x);
     }
+}
+
+Currency.electrons = new class extends Currency {
+    get value() { return player.tech.electrons; }
+    set value(x) { player.tech.electrons = x; }
+}
+
+Currency.inflatons = new class extends Currency {
+    get value() { return player.tech.inflatons; }
+    set value(x) { player.tech.inflatons = x; }
 }

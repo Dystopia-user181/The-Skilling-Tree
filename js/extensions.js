@@ -20,6 +20,13 @@ window.objectMapping = function objectMapping(x, fun) {
     return y;
 }
 
+window.openInNewTab = function openInNewTab(href) {
+  Object.assign(document.createElement('a'), {
+    target: '_blank',
+    href: href,
+  }).click();
+}
+
 window.matchBits = function matchBits(bits, id) {
     return Boolean(bits & (1 << id))
 }

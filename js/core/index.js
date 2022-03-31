@@ -5,6 +5,7 @@ export * from "./currency.js";
 export * from "./game-loop.js";
 
 export * from "./skills.js";
+export * from "./tech.js";
 
 export * from "./graphs/index.js";
 

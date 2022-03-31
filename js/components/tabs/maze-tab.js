@@ -91,7 +91,7 @@ Vue.component("maze-node", {
 Vue.component("maze-edge", {
     props: {
         connection: {
-            type: String,
+            type: Number,
             required: true
         },
         isAuto: {
@@ -365,7 +365,7 @@ Vue.component("maze-tab", {
             const graph = player.maze.graph;
             for (const node in graph) {
                 for (const otherNode of graph[node]) {
-                    connections.add(diSequenceAscending(node, otherNode, size));
+                    connections.add(diSequenceAscending(Number(node), otherNode, size));
                 }
             }
             this.connections = connections;

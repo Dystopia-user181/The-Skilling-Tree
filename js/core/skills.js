@@ -1,5 +1,6 @@
 import { GameMechanicState, BitPurchaseableState, RebuyableMechanicState } from "../lib/index.js";
 import { GameDatabase } from "../database/game-database.js";
+
 export const SkillPoints = {
     get gain() {
         let base = 1 + (player.maze.currentSize - 6) / 2;

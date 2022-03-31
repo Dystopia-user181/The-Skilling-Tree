@@ -57,7 +57,7 @@ export const GameStorage = {
             
             db.onerror = function(event) {
                 console.error("Database error: " + event.target.errorCode);
-                alert("Couldn't load player");
+                alert("Couldn't load save");
                 EventHub.dispatch(GAME_EVENTS.AFTER_PLAYER_LOAD);
             };
         };

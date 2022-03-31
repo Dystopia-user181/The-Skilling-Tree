@@ -47,5 +47,11 @@ export const Tabs = [
     id: 3,
     component: "superskills-tab",
     unlocked: () => SkillPointUpgrades.doubleBFS.canBeApplied
+},
+{
+    name: "Weird Technobabble stuff",
+    id: 4,
+    component: "tech-tab",
+    unlocked: () => PickapathUpgrades.techPair.canBeApplied
 }
 ].map(x => new TabState(x));

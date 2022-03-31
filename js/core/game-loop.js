@@ -10,6 +10,9 @@ export function gameLoop(diff = Date.now() - lastTick) {
     if (player.maze.rerollCooldown > 0) {
         player.maze.rerollCooldown = Math.max(player.maze.rerollCooldown - diff, 0);
     }
+
+    Tech.gameLoop(diff);
+
     if (Graph.atEnd) {
         const delayBefore = player.maze.skillPointDelay;
         player.maze.skillPointDelay += Math.min(diff, 1000);

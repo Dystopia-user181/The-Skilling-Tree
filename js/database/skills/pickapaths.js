@@ -133,5 +133,27 @@ GameDatabase.skills.pickapaths = {
         isUnlocked: () => SkillPointUpgrades.doubleBFS.canBeApplied && player.records.sizes[200] < 4000,
         unlockText: () => `Complete a 200x200 maze or larger within 4s.
         Currently: ${formatTime(player.records.sizes[200])}`
+    },
+    techPair: {
+        id: 7,
+        upgrades: {
+            first: {
+                id: "electron",
+                description: `Get a passive gain of 1 electron/s.`,
+                effect: 1,
+                default: 0,
+                formatEffect: x => `${x}`
+            },
+            second: {
+                id: "inflaton",
+                description: `Get a passive gain of 1 inflaton/s.`,
+                effect: 1,
+                default: 0,
+                formatEffect: x => `${x}`
+            }
+        },
+        isUnlocked: () => SkillPointUpgrades.doubleBFS.canBeApplied && player.records.sizes[384] < 5000,
+        unlockText: () => `Complete a 384x384 maze or larger within 5s.
+        Currently: ${formatTime(player.records.sizes[384])}`
     }
 };

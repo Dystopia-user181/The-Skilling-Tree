@@ -42,8 +42,15 @@ export function getStartPlayer() {
                 50: Number.MAX_VALUE,
                 64: Number.MAX_VALUE,
                 100: Number.MAX_VALUE,
-                200: Number.MAX_VALUE
+                200: Number.MAX_VALUE,
+                384: Number.MAX_VALUE
             }
+        },
+        tech: {
+            electrons: 0,
+            inflatons: 0,
+            buildings: TechBuildingState.initPlayer(TechBuildings),
+            tickspeed: 0
         },
         options: {
             lastOpenTab: 0,
