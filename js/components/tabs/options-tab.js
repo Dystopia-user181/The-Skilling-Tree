@@ -1,5 +1,4 @@
-Components.add({
-    name: "options-tab",
+Vue.component("options-tab", {
     methods: {
         hardReset() {
             GameStorage.hardReset();

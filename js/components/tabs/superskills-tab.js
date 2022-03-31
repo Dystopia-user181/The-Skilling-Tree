@@ -1,5 +1,4 @@
-Components.add({
-    name: "pickapath-upgrade",
+Vue.component("pickapath-upgrade", {
     props: {
         pickapath: {
             type: Object,
@@ -42,8 +41,7 @@ Components.add({
     </button>`
 });
 
-Components.add({
-    name: "pickapath-pair",
+Vue.component("pickapath-pair", {
     props: {
         pickapath: {
             type: Object,
@@ -83,8 +81,7 @@ Components.add({
     `
 });
 
-Components.add({
-    name: "superskills-tab",
+Vue.component("superskills-tab", {
     data() {
         return {
             records: {}

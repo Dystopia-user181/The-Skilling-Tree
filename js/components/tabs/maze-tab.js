@@ -1,5 +1,4 @@
-Components.add({
-    name: "maze-node",
+Vue.component("maze-node", {
     props: {
         id: {
             type: Number,
@@ -83,8 +82,7 @@ Components.add({
     </div>`
 });
 
-Components.add({
-    name: "maze-edge",
+Vue.component("maze-edge", {
     props: {
         connection: {
             type: String,
@@ -155,8 +153,7 @@ Components.add({
     />`
 });
 
-Components.add({
-    name: "maze-size-display",
+Vue.component("maze-size-display", {
     data() {
         return {
             isUnlocked: false,
@@ -213,8 +210,7 @@ Components.add({
     </div>`
 });
 
-Components.add({
-    name: "maze-search-mode-display",
+Vue.component("maze-search-mode-display", {
     data() {
         return {
             isDFSUnlocked: false,
@@ -276,8 +272,7 @@ Are you sure you want to do this?`)) Searching.setMode(x);
     </div>`
 });
 
-Components.add({
-    name: "maze-tab",
+Vue.component("maze-tab", {
     data() {
         return {
             connections: new Set(),
@@ -301,7 +296,9 @@ Components.add({
     },
     mounted() {
         this.ctx = this.$refs.canvas?.getContext("2d");
-        this.onMazeMove();
+        if (this.ctx) {
+            this.initCanvasGraph();
+        }
     },
     methods: {
         update() {
@@ -311,7 +308,7 @@ Components.add({
         },
         onMazeMove() {
             if (this.ctx) {
-                this.drawCanvasGraph();
+                this.drawAdditionalStuff();
             }
         },
         reroll() {
@@ -319,6 +316,9 @@ Components.add({
         },
         updateAutomation() {
             this.isAuto = player.search.mode !== SEARCH_MODES.MANUAL;
+            if (this.ctx) {
+                this.initCanvasGraph();
+            }
         },
         updateGraph() {
             const size = player.maze.currentSize;
@@ -326,7 +326,12 @@ Components.add({
             this.shouldShowLargeMazeRepresentation = size <= 32;
             if (!this.shouldShowLargeMazeRepresentation) {
                 this.$nextTick(
-                    () => this.ctx = this.$refs.canvas.getContext("2d")
+                    () => {
+                        this.ctx = this.$refs.canvas.getContext("2d");
+                        if (this.ctx) {
+                            this.initCanvasGraph();
+                        }
+                    }
                 );
                 return;
             }
@@ -341,14 +346,28 @@ Components.add({
             this.size = size * size;
             this.svgSize = 45 * size;
         },
-        drawCanvasGraph() {
+        initCanvasGraph() {
+            if (!this.ctx) return;
             const l = this.length;
+            this.ctx.fillStyle = "#999";
+            this.ctx.fillRect(0, 0, l * 2, l * 2);
             for (let i = 0; i < l; i++) {
                 for (let j = 0; j < l; j++) {
-                    this.ctx.fillStyle = this.nodeColour(i * l + j);
+                    const nodeColour = this.nodeColour(i * l + j);
+                    if (!nodeColour) continue;
+                    this.ctx.fillStyle = nodeColour;
                     this.ctx.fillRect(j * 2, i * 2, 2, 2);
                 }
             }
+        },
+        drawAdditionalStuff() {
+            const l = this.length;
+            for (const t of Graph.updateTheseTiles) {
+                const [i, j] = Graph.decompose(t);
+                this.ctx.fillStyle = this.nodeColour(t) || "#999";
+                this.ctx.fillRect(i * 2, j * 2, 2, 2);
+            }
+            Graph.updateTheseTiles.clear();
         },
         nodeColour(id) {
             const node = Node(id);
@@ -357,7 +376,7 @@ Components.add({
             if (node.isDead) return "#f00";
             if (node.isSeen || node.isSeenBySecondBFS) return "#f90";
             if (node.isInBFSQueue || node.isInSecondBFSQueue) return "#089";
-            return "#999";
+            return false;
         }
     },
     template: `

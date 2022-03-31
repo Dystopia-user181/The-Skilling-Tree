@@ -10,6 +10,7 @@ export const SEARCH_MODES = {
 export const Searching = {
     setMode(x) {
         player.search.mode = x;
+        player.maze.skillPointDelay = 0;
         Graph.resetProgress();
     },
 

@@ -1,5 +1,4 @@
-Components.add({
-    name: "skill-point-upgrade",
+Vue.component("skill-point-upgrade", {
     props: {
         upgrade: {
             type: Object,
@@ -39,8 +38,7 @@ Components.add({
     </button>`
 });
 
-Components.add({
-    name: "skill-point-rebuyable",
+Vue.component("skill-point-rebuyable", {
     props: {
         upgrade: {
             type: Object,
@@ -79,8 +77,7 @@ Components.add({
     </button>`
 });
 
-Components.add({
-    name: "skills-tab",
+Vue.component("skills-tab", {
     computed: {
         upgrades: () => SkillPointUpgrades.singles,
         rebuyables: () => SkillPointUpgrades.rebuyables,

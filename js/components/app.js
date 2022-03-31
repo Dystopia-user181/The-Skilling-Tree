@@ -1,12 +1,5 @@
-window.Components = {
-    _list: [],
-    add(x) {
-        this._list.push(x);
-    },
+export const Components = {
     load() {
-        for (const comp of this._list) {
-            Vue.component(comp.name, comp);
-        }
         GameUI.ui = new Vue({
             el: "#app",
             template: `<game-ui />`

@@ -7,13 +7,11 @@ function mergeIntoGlobal(obj) {
 import "./extensions.js";
 
 import * as lib from "./lib/index.js";
-mergeIntoGlobal(lib);
-
 import * as core from "./core/index.js";
-mergeIntoGlobal(core);
-
 import * as storage from "./storage/index.js";
-mergeIntoGlobal(storage);
-
 import * as ui from "./components/index.js";
+
+mergeIntoGlobal(core);
+mergeIntoGlobal(storage);
+mergeIntoGlobal(lib);
 mergeIntoGlobal(ui);

@@ -4,9 +4,16 @@ export const BFS = {
         const bfs = player.breadth;
         const hasSecond = SkillPointUpgrades.doubleBFS.canBeApplied;
         if (bfs.queue.includes(Graph.endPoint)) {
+            for (const t of bfs.queue) {
+                Graph.updateThisTile(t);
+            }
+            for (const t of bfs.otherQueue) {
+                Graph.updateThisTile(t);
+            }
             bfs.queue = [];
             bfs.otherQueue = [];
             bfs.seen[Graph.endPoint] = true;
+            Graph.updateThisTile(Graph.endPoint);
             Graph.goto(Graph.endPoint);
             return;
         }
@@ -16,6 +23,7 @@ export const BFS = {
                 bfs.queue = [];
                 bfs.otherQueue = [];
                 bfs.seen[found] = true;
+                Graph.updateThisTile(found);
                 Graph.goto(Graph.endPoint);
                 bfs.otherCurrentNode = Graph.endPoint;
                 return;
@@ -32,11 +40,13 @@ export const BFS = {
             }
             Graph.goto(node.id);
             bfs.seen[node.id] = true;
+            Graph.updateThisTile(node.id);
 
             for (const neighbour of node.neighbours) {
                 const node = Node(neighbour);
                 if (!node.isSeen && !node.isInBFSQueue) {
                     bfs.queue.push(neighbour);
+                    Graph.updateThisTile(neighbour);
                 }
             }
         }
@@ -47,11 +57,15 @@ export const BFS = {
                 bfs.otherQueue = [];
                 bfs.otherSeen[found] = true;
                 Graph.goto(Graph.endPoint);
+                Graph.updateThisTile(bfs.otherCurrentNode);
                 bfs.otherCurrentNode = Graph.endPoint;
+                Graph.updateThisTile(found);
                 return;
             }
             for (let i = 0; i < maxBulkOther; i++) {
                 const otherNode = Node(bfs.otherQueue.shift() ?? bfs.otherCurrentNode);
+                Graph.updateThisTile(bfs.otherCurrentNode);
+                Graph.updateThisTile(otherNode.id);
                 if (otherNode.isSeenBySecondBFS) {
                     if (SkillPointUpgrades.autoReroll.canBeApplied) Graph.reroll();
                     return;
@@ -63,6 +77,7 @@ export const BFS = {
                     const node = Node(neighbour);
                     if (!node.isSeenBySecondBFS && !node.isInSecondBFSQueue) {
                         bfs.otherQueue.push(neighbour);
+                        Graph.updateThisTile(neighbour);
                     }
                 }
             }

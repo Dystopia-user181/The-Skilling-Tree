@@ -24,6 +24,7 @@ export const Graph = {
         EventHub.dispatch(GAME_EVENTS.NEW_MAZE);
     },
     resetProgress() {
+        this.updateTheseTiles.clear();
         const s2 = player.maze.currentSize * player.maze.currentSize;
         player.records.currentTime = 0;
         player.maze.currentNode = 0;
@@ -88,6 +89,8 @@ export const Graph = {
     },
 
     goto(x) {
+        this.updateThisTile(player.maze.currentNode);
+        this.updateThisTile(x);
         player.maze.currentNode = x;
         EventHub.dispatch(GAME_EVENTS.MAZE_MOVED, x);
     },
@@ -121,7 +124,14 @@ export const Graph = {
     },
     get endPoint() {
         return player.maze.currentSize * player.maze.currentSize - 1;
-    }
+    },
+
+    updateThisTile(id) {
+        if (player.maze.currentSize > 32 && player.options.lastOpenTab === 0) {
+            this.updateTheseTiles.add(id);
+        }
+    },
+    updateTheseTiles: new Set()
 }
 
 class NodeState {

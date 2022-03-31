@@ -1,5 +1,4 @@
-Components.add({
-    name: "effect-display",
+Vue.component("effect-display", {
     props: {
         config: {
             type: Object,
