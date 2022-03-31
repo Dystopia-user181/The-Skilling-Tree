@@ -30,7 +30,7 @@ GameDatabase.tech.buildings = {
         id: "star",
         name: "star",
         description: "No, I am not proud of genesis in the slightest.",
-        cost: x => 1.35 ** x * 1e5,
+        cost: x => 1.35 ** x * 5e4,
         effect: x => 400 * x,
         isUnlocked: () => TechBuildings.planet.amount > 5
     },
@@ -38,16 +38,16 @@ GameDatabase.tech.buildings = {
         id: "skill",
         name: "skill solution",
         description: "Channel your Skill Points into more production.",
-        cost: x => 1.4 ** x * 1e6,
-        effect: x => Currency.skillPoints.value / 1e8 * x,
-        isUnlocked: () => TechBuildings.star.amount > 5
+        cost: x => 1.4 ** x * 5e5,
+        effect: x => Currency.skillPoints.value / 4e7 * x,
+        isUnlocked: () => TechBuildings.star.amount > 3
     },
     galaxy: {
         id: "galaxy",
         name: "galaxy",
         description: "The antimatter variant.",
-        cost: x => 10 ** x * 1e6,
-        effect: x => 2e3 * x,
-        isUnlocked: () => TechBuildings.skill.amount > 6
+        cost: x => 10 ** (x ** 1.156) * 2e6,
+        effect: x => 1e4 * x,
+        isUnlocked: () => TechBuildings.skill.amount > 3
     }
 }

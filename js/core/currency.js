@@ -70,10 +70,10 @@ Currency.skillPoints = new class extends Currency {
 
 Currency.electrons = new class extends Currency {
     get value() { return player.tech.electrons; }
-    set value(x) { player.tech.electrons = x; }
+    set value(x) { player.tech.electrons = Math.min(x, Number.MAX_VALUE); }
 }
 
 Currency.inflatons = new class extends Currency {
     get value() { return player.tech.inflatons; }
-    set value(x) { player.tech.inflatons = x; }
+    set value(x) { player.tech.inflatons = Math.min(x, Number.MAX_VALUE); }
 }

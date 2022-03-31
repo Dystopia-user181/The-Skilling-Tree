@@ -146,10 +146,10 @@ GameDatabase.skills.pickapaths = {
             },
             second: {
                 id: "inflaton",
-                description: `Get a passive gain of 1 inflaton/s.`,
+                description: `Get a passive gain of x10 inflatons/s.`,
                 effect: 1,
                 default: 0,
-                formatEffect: x => `${x}`
+                formatEffect: x => `x${10 ** x}`
             }
         },
         isUnlocked: () => SkillPointUpgrades.doubleBFS.canBeApplied && player.records.sizes[384] < 5000,

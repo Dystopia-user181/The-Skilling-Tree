@@ -20,8 +20,8 @@ export const Tech = {
         constructor() {
             const config = {
                 id: "tickspeed",
-                cost: x => 2 ** (x ** 1.5),
-                effect: x => (1 + player.tech.buildings.galaxy * 0.5) ** x,
+                cost: x => 2 ** (x ** 1.4) * 1e5,
+                effect: x => (1 + player.tech.buildings.galaxy) ** x,
                 formatEffect: x => `x${format(x, 2, 2)}`,
                 isUnlocked: () => player.tech.buildings.galaxy >= 1
             };

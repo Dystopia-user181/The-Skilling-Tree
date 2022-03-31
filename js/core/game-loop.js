@@ -7,6 +7,11 @@ export function gameLoop(diff = Date.now() - lastTick) {
         GameStorage.save();
     }
 
+    if (Currency.inflatons.gte(Number.MAX_VALUE) && Currency.electrons.gte(Number.MAX_VALUE)) {
+        GameUI.update();
+        return;
+    }
+
     if (player.maze.rerollCooldown > 0) {
         player.maze.rerollCooldown = Math.max(player.maze.rerollCooldown - diff, 0);
     }
