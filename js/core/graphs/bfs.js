@@ -20,6 +20,12 @@ export const BFS = {
         if (hasSecond) {
             const found = bfs.queue.find(x => Node(x).isSeenBySecondBFS);
             if (found !== undefined) {
+                for (const t of bfs.queue) {
+                    Graph.updateThisTile(t);
+                }
+                for (const t of bfs.otherQueue) {
+                    Graph.updateThisTile(t);
+                }
                 bfs.queue = [];
                 bfs.otherQueue = [];
                 bfs.seen[found] = true;
@@ -53,6 +59,12 @@ export const BFS = {
         if (hasSecond) {
             const found = bfs.otherQueue.find(x => Node(x).isSeen);
             if (found !== undefined) {
+                for (const t of bfs.queue) {
+                    Graph.updateThisTile(t);
+                }
+                for (const t of bfs.otherQueue) {
+                    Graph.updateThisTile(t);
+                }
                 bfs.queue = [];
                 bfs.otherQueue = [];
                 bfs.otherSeen[found] = true;
