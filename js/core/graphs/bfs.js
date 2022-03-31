@@ -13,6 +13,7 @@ export const BFS = {
             bfs.queue = [];
             bfs.otherQueue = [];
             bfs.seen[Graph.endPoint] = true;
+            bfs.otherCurrentNode = Graph.endPoint;
             Graph.updateThisTile(Graph.endPoint);
             Graph.goto(Graph.endPoint);
             return;

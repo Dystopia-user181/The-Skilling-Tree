@@ -34,7 +34,7 @@ Vue.component("skill-point-upgrade", {
         <br>
         {{ upgrade.config.description }}
         <br><br>
-        Cost: {{ upgrade.cost }} Skill Points
+        Cost: {{ format(upgrade.cost, 3) }} Skill Points
     </button>`
 });
 
@@ -73,7 +73,7 @@ Vue.component("skill-point-rebuyable", {
         <br>
         <effect-display :config="upgrade"/>
         <br><br>
-        Cost: {{ cost }} Skill Points
+        Cost: {{ format(cost, 3) }} Skill Points
     </button>`
 });
 

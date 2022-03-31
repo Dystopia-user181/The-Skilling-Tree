@@ -40,7 +40,8 @@ export function getStartPlayer() {
                 30: Number.MAX_VALUE,
                 50: Number.MAX_VALUE,
                 64: Number.MAX_VALUE,
-                100: Number.MAX_VALUE
+                100: Number.MAX_VALUE,
+                200: Number.MAX_VALUE
             }
         },
         options: {

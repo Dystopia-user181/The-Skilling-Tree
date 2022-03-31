@@ -1,9 +1,10 @@
 import { GameMechanicState, BitPurchaseableState, RebuyableMechanicState } from "../lib/index.js";
-
+import { GameDatabase } from "../database/game-database.js";
 export const SkillPoints = {
     get gain() {
         let base = 1 + (player.maze.currentSize - 6) / 2;
-        return Math.floor((base * this.multiplier) ** this.power) * SkillPointUpgrades.spMult.effectValue;
+        base = base ** PickapathUpgrades.spMultPowPair.power.effectOrDefault();
+        return Math.floor((base * this.multiplier) ** this.power) * this.postPowerMultiplier;
     },
 
     get multiplier() {
@@ -18,6 +19,13 @@ export const SkillPoints = {
         let power = 1;
         power *= SkillPointUpgrades.raiseSPGain1.effectOrDefault();
         return power;
+    },
+
+    get postPowerMultiplier() {
+        let multiplier = 1;
+        multiplier *= SkillPointUpgrades.spMult.effectValue;
+        multiplier *= PickapathUpgrades.spMultPowPair.multiply.effectOrDefault();
+        return multiplier;
     }
 }
 
@@ -94,105 +102,8 @@ export class PickapathState extends GameMechanicState {
 }
 
 export const SkillPointUpgrades = (function() {
-    const upgs = objectMapping({
-        times2SP: {
-            id: 0,
-            title: "Useless Upgrade",
-            description: "Multiply Skill Points gain by x2. Very exciting!",
-            cost: 5,
-            effect: 2,
-            default: 1
-        },
-        increaseMazeSize: {
-            id: 1,
-            title: "Not Useless",
-            description: "You can increase maze size to get more skill points.",
-            cost: 20
-        },
-        dfs: {
-            id: 2,
-            title: "'Puter Science",
-            description: "Unlock Depth first search.",
-            cost: 72
-        },
-        raiseSPGain1: {
-            id: 3,
-            title: "Please help me with balancing",
-            description: "^1.3 Skill Points gain but floor it so formatting doesn't go wack. whatever.",
-            cost: 150,
-            isUnlocked: () => SkillPointUpgrades.decreaseSearchSpeed.amount >= 3,
-            effect: 1.3,
-            default: 1
-        },
-        moreConnections: {
-            id: 4,
-            title: "(but this is an unweighted graph)",
-            description: `Give about 30% more connections between nodes.
-                Also speeds up search by 30%.`,
-            cost: 300,
-            isUnlocked: () => SkillPointUpgrades.decreaseSearchSpeed.amount >= 3,
-            effect: 1.3,
-            default: 1
-        },
-        bfs: {
-            id: 5,
-            title: "DLS",
-            description: "Depth first search bad? Try [[the other one]]!",
-            cost: 500,
-            isUnlocked: () => SkillPointUpgrades.decreaseSearchSpeed.amount >= 3
-        },
-        autoReroll: {
-            id: 6,
-            title: "Machine Unlearning",
-            description: "Searching automatically rerolls if you are stuck. Decreases reroll cooldown to 5s.",
-            cost: 1000,
-            isUnlocked: () => SkillPointUpgrades.decreaseSearchSpeed.amount >= 3,
-            effect: 5,
-            default: 10
-        },
-        doubleBFS: {
-            id: 7,
-            title: "Not Stupid",
-            description: "What if we BFS from *both* sides? It'll take twice as long but it might work.",
-            cost: 2000,
-            isUnlocked: () => SkillPointUpgrades.decreaseSearchSpeed.amount >= 3,
-            onPurchase: () => Graph.newGraph()
-        },
-
-
-        decreaseSearchSpeed: {
-            isRebuyable: true,
-            id: "decreaseSearchSpeed",
-            title: "Download More CPU",
-            description: "Speed up search by a factor of (omfggg whoo cares?)",
-            isUnlocked: () => SkillPointUpgrades.dfs.canBeApplied,
-            cost: x => Math.ceil(1.1 ** x * 50),
-            effect: x => (x + 1) ** PickapathUpgrades.chooseCPUPair.power.effectOrDefault()
-                * PickapathUpgrades.chooseCPUPair.multiply.effectOrDefault(),
-            formatEffect: x => `x${x.toFixed(1)} times faster`
-        },
-        increaseMaxMapSize: {
-            isRebuyable: true,
-            id: "increaseMaxMapSize",
-            title: "Download More RAM",
-            description: "Increase maze size by [[redacted]]",
-            isUnlocked: () => SkillPointUpgrades.bfs.canBeApplied,
-            cost: x => Math.ceil(1.1 ** x * 80),
-            effect: x => 2 * x,
-            formatEffect: x => `+${x} maximum maze size`
-        },
-        spMult: {
-            isRebuyable: true,
-            id: "spMult",
-            title: "Matter Dimensions",
-            description: `So this upgrade cost increases by tenfold and its effect by twofold for
-            each purchase. Sounds familiar?`,
-            isUnlocked: () => PickapathUpgrades.fakeIPMult.isUnlocked,
-            cost: x => Math.ceil(10 ** x * 1000),
-            effect: x => 2 ** x,
-            formatEffect: x => `x${x} Skill Points gain`
-        }
-    }, x => x.isRebuyable ? new SkillPointRebuyableState(x) : new SkillPointUpgradeState(x));
+    const upgs = objectMapping(GameDatabase.skills.upgrades,
+        x => x.isRebuyable ? new SkillPointRebuyableState(x) : new SkillPointUpgradeState(x));
 
     upgs.singles = filter(upgs, x => x instanceof SkillPointUpgradeState);
     upgs.rebuyables = filter(upgs, x => x instanceof SkillPointRebuyableState);
@@ -201,115 +112,7 @@ export const SkillPointUpgrades = (function() {
 })();
 
 export const PickapathUpgrades = (function() {
-    const upgs = objectMapping({
-        spGainPair: {
-            id: 0,
-            upgrades: {
-                first: {
-                    id: "doubleSPGain",
-                    description: "Multiply Skill Points gain by x2. Are you sure this is good?",
-                    effect: 2,
-                    default: 1,
-                    formatEffect: x => `x${x}`
-                },
-                second: {
-                    id: "tripleSPGain",
-                    description: `Multiply Skill Points gain by x3. Except mazes which take more than 7 seconds
-                    to complete don't give Skill Points.`,
-                    effect: () => player.records.currentTime > 7000 ? 0 : 3,
-                    default: 1,
-                    formatEffect: x => `x${x}`
-                },
-            },
-            isUnlocked: () => SkillPointUpgrades.doubleBFS.canBeApplied && player.records.sizes[30] < 10000,
-            unlockText: () => `Complete a 30x30 maze or larger within 10s.
-            Currently: ${(player.records.sizes[30] / 1000).toFixed(3)}s`
-        },
-        connectionsPair: {
-            id: 1,
-            upgrades: {
-                first: {
-                    id: "twoConnections",
-                    description: `Decrease maximum distance between connections from 3 to 2. Speed up
-                    search by x1.4.`,
-                    effect: 1.4,
-                    default: 1,
-                    formatEffect: x => `x${x}`,
-                    onChoose: () => Graph.newGraph()
-                },
-                second: {
-                    id: "oneConnection",
-                    description: `Decrease maximum distance between connections from 3 to 1. Speed up
-                    search by x2.`,
-                    effect: 2,
-                    default: 1,
-                    formatEffect: x => `x${x}`,
-                    onChoose: () => Graph.newGraph()
-                },
-            },
-            isUnlocked: () => SkillPointUpgrades.doubleBFS.canBeApplied && player.records.sizes[50] < 100000,
-            unlockText: () => `Complete a 50x50 maze or larger within 100s.
-            Currently: ${(player.records.sizes[50] / 1000).toFixed(3)}s`
-        },
-        fakeIPMult: {
-            id: 3,
-            upgrades: {
-                first: {
-                    id: "a",
-                    description: `Unlock a new upgrade.`
-                },
-                second: {
-                    id: "b",
-                    description: "UNLOCK A NEW UPGRADE!!!!!!!!!!!!!1111"
-                },
-            },
-            isUnlocked: () => SkillPointUpgrades.doubleBFS.canBeApplied && player.records.sizes[64] < 24000,
-            unlockText: () => `Complete a 64x64 maze or larger within 24s.
-            Currently: ${(player.records.sizes[64] / 1000).toFixed(3)}s`
-        },
-        chooseCPUPair: {
-            id: 4,
-            upgrades: {
-                first: {
-                    id: "power",
-                    description: "CPUs ^1.25.",
-                    effect: 1.25,
-                    default: 1,
-                    formatEffect: x => `^${x}`
-                },
-                second: {
-                    id: "multiply",
-                    description: "CPUs x3.",
-                    effect: 3,
-                    default: 1,
-                    formatEffect: x => `x${x}`
-                },
-            },
-            isUnlocked: () => SkillPointUpgrades.doubleBFS.canBeApplied && player.records.sizes[100] < 40000,
-            unlockText: () => `Complete a 100x100 maze or larger within 40s.
-            Currently: ${(player.records.sizes[100] / 1000).toFixed(3)}s`
-        },
-        searchImprovePair: {
-            id: 5,
-            upgrades: {
-                first: {
-                    id: "dfs",
-                    description: "New technology 'Death first search' allows DFS to be x12 quicker.",
-                    effect: 12,
-                    default: 1,
-                    formatEffect: x => `x${x}`
-                },
-                second: {
-                    id: "bfs",
-                    description: `New technology 'Bread first search' processes all queued nodes at once with a
-                    maximum of 8 nodes.`
-                },
-            },
-            isUnlocked: () => SkillPointUpgrades.doubleBFS.canBeApplied && player.records.sizes[100] < 40000,
-            unlockText: () => `Complete a 100x100 maze or larger within 40s.
-            Currently: ${(player.records.sizes[100] / 1000).toFixed(3)}s`
-        }
-    }, x => new PickapathState(x));
+    const upgs = objectMapping(GameDatabase.skills.pickapaths, x => new PickapathState(x));
     
     return upgs;
 })();

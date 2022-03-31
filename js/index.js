@@ -6,6 +6,7 @@ function mergeIntoGlobal(obj) {
 
 import "./extensions.js";
 
+import "./database/index.js";
 import * as lib from "./lib/index.js";
 import * as core from "./core/index.js";
 import * as storage from "./storage/index.js";

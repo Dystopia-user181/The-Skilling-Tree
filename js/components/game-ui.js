@@ -25,7 +25,7 @@ Vue.component("game-ui", {
     template: `
     <div>
         <h2>The Modding Graph</h2>
-        <span>Time since last save: {{ (timeSinceLastSave / 1000).toFixed(3) }}s</span>
+        <span>Time since last save: {{ formatTime(timeSinceLastSave) }}</span>
         <br>
         <button
             v-for="(tab, idx) in Tabs.filter(x => x.unlocked)"
@@ -36,7 +36,7 @@ Vue.component("game-ui", {
         <br>
         <template v-if="spUnlock">
             <br>
-            You have <span style="color: #08b">{{ sp }}</span> Skill Points.
+            You have <span style="color: #08b">{{ format(sp, 3) }}</span> Skill Points.
         </template>
         <component :is="Tabs[activeTab].component" />
     </div>`

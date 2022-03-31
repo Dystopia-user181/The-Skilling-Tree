@@ -78,7 +78,7 @@ Vue.component("maze-node", {
         }"
         @click="handleClick"
     >
-        {{ isEnd ? spGain + "SP" : id }}
+        {{ isEnd ? format(spGain, 3) + "SP" : id }}
     </div>`
 });
 
@@ -171,7 +171,7 @@ Vue.component("maze-size-display", {
             this.nextSize = player.maze.nextSize;
             this.minSize = Graph.minSize;
             this.maxSize = Graph.maxSize;
-            this.currentTime = player.records.currentTime / 1000;
+            this.currentTime = player.records.currentTime;
         },
         increment() {
             Graph.incrementSize();
@@ -204,7 +204,7 @@ Vue.component("maze-size-display", {
         </button>
         <br>
         Current Size: {{ currentSize }} &nbsp;
-        &nbsp; Current Time: {{ currentTime.toFixed(3) }}s
+        &nbsp; Current Time: {{ formatTime(currentTime) }}
         <br>
         <br>
     </div>`
@@ -261,10 +261,10 @@ Are you sure you want to do this?`)) Searching.setMode(x);
         <br>
         <template v-if="!isManual">
             <span v-if="searchCooldown <= 100">
-                {{ (1000 / searchCooldown).toFixed(1) }} searches/s
+                {{ format(1000 / searchCooldown, 2, 1) }} searches/s
             </span>
             <span v-else>
-                {{ ((searchCooldown - currentSearchTime) / 1000).toFixed(3) }}s until next search
+                {{ formatTime(searchCooldown - currentSearchTime) }} until next search
             </span>
         </template>
         <br>
@@ -419,7 +419,7 @@ Vue.component("maze-tab", {
             </svg>
         </div>
         <div v-else>
-            Skill Points Gain: {{ spGain }}
+            Skill Points Gain: {{ format(spGain, 3) }}
             <br><br>
             The maze is too big to be represented using nodes
             <br>

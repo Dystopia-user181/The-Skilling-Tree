@@ -100,7 +100,7 @@ Vue.component("superskills-tab", {
         <br>
         Records:<br>
         <span v-for="(time, size) in records">
-            {{ size }}x{{ size }}: {{ (time / 1000).toFixed(3) }}s
+            {{ size }}x{{ size }}: {{ formatTime(time) }}
             <br>
         </span>
         <br>

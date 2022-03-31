@@ -32,6 +32,12 @@ Vue.mixin({
     methods: {
         on(event, fn) {
             EventHub.ui.on(event, fn, this);
+        },
+        format(a, b, c) {
+            return format(a, b, c);
+        },
+        formatTime(a) {
+            return formatTime(a);
         }
     }
 });
