@@ -9,9 +9,7 @@ export const GameStorage = {
         let transaction = db.transaction(["data"], "readwrite");
         transaction.objectStore("data").delete("1");
         transaction = db.transaction(["data"], "readwrite");
-        transaction.onerror = function() {
-            Notifier.error("Could Not Save.");
-        };
+        transaction.onerror = function() {};
         let objectStore = transaction.objectStore("data");
         let objectStoreRequest = objectStore.add({player, id: "1"});
         objectStoreRequest.onsuccess = function(event) {
