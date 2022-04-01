@@ -39,6 +39,8 @@ body {
     cursor: pointer;
 
     transition: transform 0.2s;
+
+    pointer-events: all;
 }
 
 .o-maze-node--disabled {
@@ -139,10 +141,15 @@ body {
 
 .l-maze {
     position: relative;
+    pointer-events: none;
 }
 
 .l-maze .o-maze-node, .l-maze svg, .l-maze .o-maze-connection {
     animation: none;
+}
+
+svg {
+    pointer-events: none;
 }
 
 /* END REGION: MAZE */
