@@ -1,23 +1,6 @@
 body {
     font-family: Arial;
     user-select: none;
-    animation: a-acid linear infinite 300s;
-}
-
-@keyframes a-acid {
-    0% { filter: hue-rotate(0deg) invert(0); }
-    50% { filter: hue-rotate(90deg) invert(0.1); }
-    100% { filter: hue-rotate(0deg) invert(0); }
-}
-
-* {
-    animation: a-rotate-very-slowly linear infinite 300s;
-}
-
-@keyframes a-rotate-very-slowly {
-    0% { transform: rotate(0); }
-    50% { transform: rotate(3deg); }
-    100% { transform: rotate(0); }
 }
 
 /* START REGION: MAZE */

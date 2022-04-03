@@ -26,6 +26,7 @@ Vue.component("skill-point-upgrade", {
         :class="{
             'o-upgrade--bought': isBought
         }"
+        :disabled="!canBeBought && !isBought"
         @click="upgrade.purchase()"
     >
         <b>{{ upgrade.config.title }}</b>

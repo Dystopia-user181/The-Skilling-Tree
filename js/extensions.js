@@ -39,7 +39,6 @@ window.diSequenceAscending = function sequenceFrom(a, b, n) {
 }
 
 window.format = function format(x, places = 2, placesBefore1e6 = 0) {
-    return x % 1 ? x.toFixed(15) : x;
     if (x < 1e6) return x.toFixed(placesBefore1e6);
     const e = Math.floor(Math.log10(x));
     const m = x / (10 ** e);
@@ -47,7 +46,6 @@ window.format = function format(x, places = 2, placesBefore1e6 = 0) {
 }
 
 window.formatTime = function formatTime(x) {
-    return `${(x / 60000).toFixed(15)}mins`
     if (x < 1e3) return `${format(x)}ms`;
     return `${format(x / 1000, 3, 3)}s`;
 }

@@ -28,6 +28,7 @@ Vue.component("adjust-bfs-slider", {
         BFS bulk:
         <button
             class="o-slider-button"
+            :disabled="bulk <= 0"
             @click="decrement"
         >
             -
@@ -37,6 +38,7 @@ Vue.component("adjust-bfs-slider", {
         </span>
         <button
             class="o-slider-button"
+            :disabled="bulk >= bulkCap"
             @click="increment"
         >
             +
