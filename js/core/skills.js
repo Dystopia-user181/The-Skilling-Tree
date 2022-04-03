@@ -5,7 +5,7 @@ export const SkillPoints = {
     get gain() {
         let base = 1 + (player.maze.currentSize - 6) / 2;
         base = base ** PickapathUpgrades.spMultPowPair.power.effectOrDefault();
-        return Math.floor((base * this.multiplier) ** this.power) * this.postPowerMultiplier;
+        return Math.floor(((base * this.multiplier) ** this.power) * this.postPowerMultiplier);
     },
 
     get multiplier() {
